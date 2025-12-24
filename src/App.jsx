@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * ToolStack — Check-It (Tailwind UI)
+ * ToolStack — Check-It (Styled v1: grey + lime/green accent)
  * - Sections + items
  * - Delete section (in-app confirm modal)
  * - Reorder items via drag & drop (within a section)
@@ -35,30 +35,46 @@ function arrayMove(arr, from, to) {
   return a;
 }
 
-function SmallButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
-  const cls =
-    tone === "primary"
-      ? "bg-slate-900 hover:bg-slate-800 text-white border-slate-900"
-      : tone === "danger"
-        ? "bg-rose-600 hover:bg-rose-700 text-white border-rose-700"
-        : "bg-white hover:bg-slate-50 text-slate-900 border-slate-200";
+const btnSecondary =
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white shadow-sm hover:bg-neutral-50 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+const btnPrimary =
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-900 bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+const btnDanger =
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 text-red-700 shadow-sm hover:bg-red-100 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+const inputBase =
+  "mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300";
+const card =
+  "rounded-2xl bg-white border border-neutral-200 shadow-sm";
+const cardHead =
+  "px-4 py-3 border-b border-neutral-100";
+const cardPad =
+  "p-4";
 
+function SmallButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
+  const cls = tone === "primary" ? btnPrimary : tone === "danger" ? btnDanger : btnSecondary;
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition disabled:opacity-50 disabled:cursor-not-allowed ${cls} ${className}`}
+      className={`${cls} ${className}`}
     >
       {children}
     </button>
   );
 }
 
-function Pill({ children }) {
+function Pill({ children, tone = "default" }) {
+  const cls =
+    tone === "accent"
+      ? "border-lime-200 bg-lime-50 text-neutral-800"
+      : tone === "warn"
+        ? "border-amber-200 bg-amber-50 text-neutral-800"
+        : "border-neutral-200 bg-white text-neutral-700";
+
   return (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border border-slate-200 bg-white text-slate-700">
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}`}>
       {children}
     </span>
   );
@@ -70,7 +86,9 @@ function Checkbox({ checked, onChange }) {
       type="button"
       onClick={() => onChange(!checked)}
       className={`h-5 w-5 rounded-md border flex items-center justify-center transition ${
-        checked ? "bg-slate-900 border-slate-900" : "bg-white border-slate-300 hover:bg-slate-50"
+        checked
+          ? "bg-neutral-900 border-neutral-900"
+          : "bg-white border-neutral-300 hover:bg-neutral-50"
       }`}
       aria-label={checked ? "Uncheck" : "Check"}
     >
@@ -94,22 +112,23 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative w-full max-w-md rounded-2xl bg-white border border-slate-200 shadow-lg">
-        <div className="p-4 border-b border-slate-100">
-          <div className="text-lg font-semibold text-slate-900">{title}</div>
-          <div className="text-sm text-slate-600 mt-1">{message}</div>
+      <div className="relative w-full max-w-md rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
+        <div className="p-4 border-b border-neutral-100">
+          <div className="text-lg font-semibold text-neutral-900">{title}</div>
+          <div className="text-sm text-neutral-600 mt-1">{message}</div>
+          <div className="mt-3 h-[2px] w-40 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
         </div>
         <div className="p-4 flex items-center justify-end gap-2">
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900 transition"
             onClick={onCancel}
           >
             Cancel
           </button>
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-rose-700 bg-rose-600 hover:bg-rose-700 text-white transition"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 transition"
             onClick={onConfirm}
           >
             {confirmText}
@@ -221,7 +240,9 @@ export default function App() {
   const updateItem = (sectionId, itemId, patch) => {
     setSections((prev) =>
       prev.map((s) =>
-        s.id === sectionId ? { ...s, items: (s.items || []).map((it) => (it.id === itemId ? { ...it, ...patch } : it)) } : s
+        s.id === sectionId
+          ? { ...s, items: (s.items || []).map((it) => (it.id === itemId ? { ...it, ...patch } : it)) }
+          : s
       )
     );
   };
@@ -291,7 +312,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
       {/* Print rules */}
       <style>{`
         @media print { .print\\:hidden { display: none !important; } }
@@ -338,24 +359,25 @@ export default function App() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white border border-slate-200 shadow-lg overflow-auto max-h-[80vh]">
+            <div className="rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-auto max-h-[80vh]">
               <div id="checkit-print" className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-2xl font-semibold text-slate-900">{title || "Check-It"}</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-2xl font-bold tracking-tight text-neutral-900">{title || "Check-It"}</div>
+                    <div className="text-sm text-neutral-600">
                       {totals.done}/{totals.total} completed{totals.overdue ? ` • ${totals.overdue} overdue` : ""}
                     </div>
+                    <div className="mt-3 h-[2px] w-72 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
                   </div>
-                  <div className="text-sm text-slate-600">Generated: {new Date().toLocaleString()}</div>
+                  <div className="text-sm text-neutral-600">Generated: {new Date().toLocaleString()}</div>
                 </div>
 
                 <div className="mt-5 space-y-5">
                   {sections.map((s) => (
-                    <div key={s.id} className="rounded-2xl border border-slate-200">
-                      <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                        <div className="font-semibold text-slate-900">{s.name}</div>
-                        <div className="text-xs text-slate-500">
+                    <div key={s.id} className="rounded-2xl border border-neutral-200">
+                      <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
+                        <div className="font-semibold text-neutral-900">{s.name}</div>
+                        <div className="text-xs text-neutral-500">
                           {(s.items || []).filter((i) => i.done).length}/{(s.items || []).length}
                         </div>
                       </div>
@@ -366,43 +388,45 @@ export default function App() {
                               <li key={it.id} className="flex items-start gap-3">
                                 <div
                                   className={`mt-0.5 h-4 w-4 rounded border ${
-                                    it.done ? "bg-slate-900 border-slate-900" : "bg-white border-slate-400"
+                                    it.done ? "bg-neutral-900 border-neutral-900" : "bg-white border-neutral-400"
                                   }`}
                                 />
                                 <div className="min-w-0 flex-1">
-                                  <div className={`text-sm ${it.done ? "text-slate-500 line-through" : "text-slate-900"}`}>
+                                  <div className={`text-sm ${it.done ? "text-neutral-500 line-through" : "text-neutral-900"}`}>
                                     {it.text}
                                   </div>
-                                  {it.dueDate ? <div className="text-xs text-slate-500 mt-0.5">Due: {it.dueDate}</div> : null}
+                                  {it.dueDate ? <div className="text-xs text-neutral-500 mt-0.5">Due: {it.dueDate}</div> : null}
                                 </div>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <div className="text-sm text-slate-500">(no items)</div>
+                          <div className="text-sm text-neutral-500">(no items)</div>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-5 text-xs text-slate-500">ToolStack • Check-It</div>
+                <div className="mt-5 text-xs text-neutral-500">ToolStack • Check-It</div>
               </div>
             </div>
           </div>
         </div>
       ) : null}
 
-      <div className="max-w-6xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6">
+        {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-2xl font-semibold text-slate-900">Check-It</div>
-            <div className="text-sm text-slate-600">Sections, due dates, and drag-to-reorder.</div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Pill>{totals.left} left</Pill>
+            <div className="text-2xl font-bold tracking-tight text-neutral-900">Check-It</div>
+            <div className="text-sm text-neutral-600">Checklists, due dates, and drag-to-reorder.</div>
+            <div className="mt-3 h-[2px] w-80 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Pill tone="accent">{totals.left} left</Pill>
               <Pill>{totals.done} done</Pill>
               <Pill>{totals.total} total</Pill>
-              {totals.overdue ? <Pill>{totals.overdue} overdue</Pill> : null}
+              {totals.overdue ? <Pill tone="warn">{totals.overdue} overdue</Pill> : null}
             </div>
           </div>
 
@@ -414,7 +438,8 @@ export default function App() {
               Print / Save PDF
             </SmallButton>
             <SmallButton onClick={exportJSON}>Export</SmallButton>
-            <label className="print:hidden px-3 py-2 rounded-xl text-sm font-medium bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 cursor-pointer">
+
+            <label className={`${btnPrimary} cursor-pointer`}>
               Import
               <input
                 type="file"
@@ -428,18 +453,14 @@ export default function App() {
 
         <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Controls */}
-          <div className="rounded-2xl bg-white shadow-sm border border-slate-200">
-            <div className="px-4 py-3 border-b border-slate-100">
-              <div className="font-semibold text-slate-900">Controls</div>
+          <div className={`${card}`}>
+            <div className={`${cardHead}`}>
+              <div className="font-semibold text-neutral-900">Controls</div>
             </div>
-            <div className="p-4 space-y-3">
+            <div className={`${cardPad} space-y-3`}>
               <div>
-                <label className="text-sm text-slate-700 font-medium">Checklist title</label>
-                <input
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
+                <label className="text-sm text-neutral-700 font-medium">Checklist title</label>
+                <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -458,7 +479,9 @@ export default function App() {
                 </SmallButton>
               </div>
 
-              <div className="text-xs text-slate-500">Tip: drag the handle (≡) to reorder items inside a section.</div>
+              <div className="text-xs text-neutral-500">
+                Tip: drag the handle (≡) to reorder items inside a section.
+              </div>
             </div>
           </div>
 
@@ -467,15 +490,15 @@ export default function App() {
             {sections.map((s) => {
               const st = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
               return (
-                <div key={s.id} className="rounded-2xl bg-white shadow-sm border border-slate-200">
-                  <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-3">
+                <div key={s.id} className={`${card}`}>
+                  <div className={`${cardHead} flex items-center justify-between gap-3`}>
                     <div className="min-w-0">
                       <input
-                        className="w-full font-semibold text-slate-900 bg-transparent outline-none"
+                        className="w-full font-semibold text-neutral-900 bg-transparent outline-none"
                         value={s.name}
                         onChange={(e) => renameSection(s.id, e.target.value)}
                       />
-                      <div className="text-xs text-slate-500 mt-1">
+                      <div className="text-xs text-neutral-500 mt-1">
                         {st.done}/{st.total} done • {st.left} left{st.overdue ? ` • ${st.overdue} overdue` : ""}
                       </div>
                     </div>
@@ -493,7 +516,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="p-4">
+                  <div className={`${cardPad}`}>
                     {(s.items || []).length ? (
                       <ul className="space-y-3">
                         {s.items.map((it, idx) => {
@@ -502,7 +525,7 @@ export default function App() {
                             <li
                               key={it.id}
                               className={`flex items-start gap-3 rounded-2xl p-2 border ${
-                                overdue ? "border-rose-200 bg-rose-50" : "border-slate-200 bg-white"
+                                overdue ? "border-red-200 bg-red-50" : "border-neutral-200 bg-white"
                               }`}
                               onDragOver={onDragOverItem()}
                               onDrop={onDropItem(s.id, idx)}
@@ -511,7 +534,7 @@ export default function App() {
                                 type="button"
                                 draggable
                                 onDragStart={onDragStartItem(s.id, idx)}
-                                className="print:hidden h-9 w-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                                className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center cursor-grab active:cursor-grabbing"
                                 title="Drag to reorder"
                               >
                                 ≡
@@ -524,10 +547,10 @@ export default function App() {
                               <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-2">
                                 <div className="md:col-span-2">
                                   <input
-                                    className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition ${
+                                    className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300 ${
                                       it.done
-                                        ? "border-slate-200 bg-slate-50 text-slate-500 line-through"
-                                        : "border-slate-200 bg-white text-slate-900 focus:border-slate-300"
+                                        ? "border-neutral-200 bg-neutral-50 text-neutral-500 line-through"
+                                        : "border-neutral-200 bg-white text-neutral-900"
                                     }`}
                                     value={it.text}
                                     onChange={(e) => updateItem(s.id, it.id, { text: e.target.value })}
@@ -537,17 +560,17 @@ export default function App() {
                                 <div>
                                   <input
                                     type="date"
-                                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+                                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300"
                                     value={it.dueDate || ""}
                                     onChange={(e) => updateItem(s.id, it.id, { dueDate: e.target.value })}
                                   />
-                                  {overdue ? <div className="text-xs text-rose-700 mt-1">Overdue</div> : null}
+                                  {overdue ? <div className="text-xs text-red-700 mt-1">Overdue</div> : null}
                                 </div>
                               </div>
 
                               <button
                                 type="button"
-                                className="print:hidden px-2 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700"
+                                className="print:hidden px-2 py-2 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-700"
                                 onClick={() => deleteItem(s.id, it.id)}
                                 title="Delete item"
                               >
@@ -558,7 +581,7 @@ export default function App() {
                         })}
                       </ul>
                     ) : (
-                      <div className="text-sm text-slate-500">No items yet. Click “Add item”.</div>
+                      <div className="text-sm text-neutral-500">No items yet. Click “Add item”.</div>
                     )}
                   </div>
                 </div>
@@ -568,7 +591,7 @@ export default function App() {
         </div>
 
         {toast ? (
-          <div className="fixed bottom-6 right-6 rounded-2xl bg-slate-900 text-white px-4 py-3 shadow-lg print:hidden">
+          <div className="fixed bottom-6 right-6 rounded-2xl bg-neutral-900 text-white px-4 py-3 shadow-xl print:hidden">
             <div className="text-sm">{toast}</div>
           </div>
         ) : null}
