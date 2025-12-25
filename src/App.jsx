@@ -9,6 +9,10 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
  * - Print Preview (prints only the preview sheet)
  * - Export/Import JSON
  * - Autosave to localStorage
+ *
+ * Added:
+ * - Search box (filters items across all sections)
+ * - Filter pills: All / Today / Overdue
  */
 
 const LS_KEY = "toolstack_checkit_v2";
@@ -43,23 +47,14 @@ const btnDanger =
   "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 text-red-700 shadow-sm hover:bg-red-100 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
 const inputBase =
   "mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300";
-const card =
-  "rounded-2xl bg-white border border-neutral-200 shadow-sm";
-const cardHead =
-  "px-4 py-3 border-b border-neutral-100";
-const cardPad =
-  "p-4";
+const card = "rounded-2xl bg-white border border-neutral-200 shadow-sm";
+const cardHead = "px-4 py-3 border-b border-neutral-100";
+const cardPad = "p-4";
 
 function SmallButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
   const cls = tone === "primary" ? btnPrimary : tone === "danger" ? btnDanger : btnSecondary;
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
-      className={`${cls} ${className}`}
-    >
+    <button type="button" onClick={onClick} disabled={disabled} title={title} className={`${cls} ${className}`}>
       {children}
     </button>
   );
@@ -70,8 +65,8 @@ function Pill({ children, tone = "default" }) {
     tone === "accent"
       ? "border-lime-200 bg-lime-50 text-neutral-800"
       : tone === "warn"
-        ? "border-amber-200 bg-amber-50 text-neutral-800"
-        : "border-neutral-200 bg-white text-neutral-700";
+      ? "border-amber-200 bg-amber-50 text-neutral-800"
+      : "border-neutral-200 bg-white text-neutral-700";
 
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}`}>
@@ -86,9 +81,7 @@ function Checkbox({ checked, onChange }) {
       type="button"
       onClick={() => onChange(!checked)}
       className={`h-5 w-5 rounded-md border flex items-center justify-center transition ${
-        checked
-          ? "bg-neutral-900 border-neutral-900"
-          : "bg-white border-neutral-300 hover:bg-neutral-50"
+        checked ? "bg-neutral-900 border-neutral-900" : "bg-white border-neutral-300 hover:bg-neutral-50"
       }`}
       aria-label={checked ? "Uncheck" : "Check"}
     >
@@ -141,6 +134,10 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
 
 export default function App() {
   const [title, setTitle] = useState("Check-It");
+
+  // NEW: Search + filter
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all"); // all | today | overdue
 
   const [sections, setSections] = useState(() => {
     const base = [
@@ -204,6 +201,46 @@ export default function App() {
       return { id: s.id, total, done, left: Math.max(0, total - done), overdue };
     });
   }, [sections]);
+
+  // NEW: filtered sections (for display/preview)
+  const filteredSections = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const t = todayISO();
+
+    const passesFilter = (it) => {
+      if (filter === "today") return !it.done && it.dueDate && it.dueDate === t;
+      if (filter === "overdue") return !it.done && it.dueDate && it.dueDate < t;
+      return true; // all
+    };
+
+    const passesSearch = (it) => {
+      if (!q) return true;
+      return String(it.text || "").toLowerCase().includes(q);
+    };
+
+    return sections.map((s) => ({
+      ...s,
+      items: (s.items || []).filter((it) => passesFilter(it) && passesSearch(it)),
+    }));
+  }, [sections, search, filter]);
+
+  const isFiltered = useMemo(() => !!search.trim() || filter !== "all", [search, filter]);
+
+  const filteredTotals = useMemo(() => {
+    let total = 0;
+    for (const s of filteredSections) total += (s.items || []).length;
+    return { total };
+  }, [filteredSections]);
+
+  const filteredSectionTotals = useMemo(() => {
+    const t = todayISO();
+    return filteredSections.map((s) => {
+      const total = (s.items || []).length;
+      const done = (s.items || []).filter((i) => i.done).length;
+      const overdue = (s.items || []).filter((i) => !i.done && i.dueDate && i.dueDate < t).length;
+      return { id: s.id, total, done, left: Math.max(0, total - done), overdue };
+    });
+  }, [filteredSections]);
 
   const addSection = () => {
     setSections((prev) => [...prev, { id: uid(), name: `Section ${prev.length + 1}`, items: [] }]);
@@ -366,6 +403,7 @@ export default function App() {
                     <div className="text-2xl font-bold tracking-tight text-neutral-900">{title || "Check-It"}</div>
                     <div className="text-sm text-neutral-600">
                       {totals.done}/{totals.total} completed{totals.overdue ? ` • ${totals.overdue} overdue` : ""}
+                      {isFiltered ? ` • showing ${filteredTotals.total} item(s)` : ""}
                     </div>
                     <div className="mt-3 h-[2px] w-72 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
                   </div>
@@ -373,7 +411,7 @@ export default function App() {
                 </div>
 
                 <div className="mt-5 space-y-5">
-                  {sections.map((s) => (
+                  {filteredSections.map((s) => (
                     <div key={s.id} className="rounded-2xl border border-neutral-200">
                       <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
                         <div className="font-semibold text-neutral-900">{s.name}</div>
@@ -427,6 +465,7 @@ export default function App() {
               <Pill>{totals.done} done</Pill>
               <Pill>{totals.total} total</Pill>
               {totals.overdue ? <Pill tone="warn">{totals.overdue} overdue</Pill> : null}
+              {isFiltered ? <Pill>Filtered: {filteredTotals.total}</Pill> : null}
             </div>
           </div>
 
@@ -463,6 +502,70 @@ export default function App() {
                 <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
 
+              {/* NEW: Search + Filter */}
+              <div>
+                <label className="text-sm text-neutral-700 font-medium">Search</label>
+                <input
+                  className={inputBase}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search items..."
+                />
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                      filter === "all"
+                        ? "border-neutral-900 bg-neutral-900 text-white"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                    }`}
+                    onClick={() => setFilter("all")}
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                      filter === "today"
+                        ? "border-neutral-900 bg-neutral-900 text-white"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                    }`}
+                    onClick={() => setFilter("today")}
+                  >
+                    Today
+                  </button>
+                  <button
+                    type="button"
+                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                      filter === "overdue"
+                        ? "border-neutral-900 bg-neutral-900 text-white"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                    }`}
+                    onClick={() => setFilter("overdue")}
+                  >
+                    Overdue
+                  </button>
+
+                  {isFiltered ? (
+                    <button
+                      type="button"
+                      className={btnSecondary}
+                      onClick={() => {
+                        setSearch("");
+                        setFilter("all");
+                      }}
+                    >
+                      Clear
+                    </button>
+                  ) : null}
+                </div>
+
+                {isFiltered ? (
+                  <div className="mt-2 text-xs text-neutral-500">Showing {filteredTotals.total} item(s) (filtered)</div>
+                ) : null}
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 <SmallButton tone="primary" onClick={addSection} className="w-full">
                   Add section
@@ -479,16 +582,17 @@ export default function App() {
                 </SmallButton>
               </div>
 
-              <div className="text-xs text-neutral-500">
-                Tip: drag the handle (≡) to reorder items inside a section.
-              </div>
+              <div className="text-xs text-neutral-500">Tip: drag the handle (≡) to reorder items inside a section.</div>
             </div>
           </div>
 
           {/* Sections */}
           <div className="lg:col-span-2 space-y-3">
-            {sections.map((s) => {
-              const st = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+            {filteredSections.map((s) => {
+              const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+              const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+              const st = isFiltered ? stShown : stAll;
+
               return (
                 <div key={s.id} className={`${card}`}>
                   <div className={`${cardHead} flex items-center justify-between gap-3`}>
@@ -500,6 +604,9 @@ export default function App() {
                       />
                       <div className="text-xs text-neutral-500 mt-1">
                         {st.done}/{st.total} done • {st.left} left{st.overdue ? ` • ${st.overdue} overdue` : ""}
+                        {isFiltered ? (
+                          <span className="ml-2">• showing {stShown.total}/{stAll.total}</span>
+                        ) : null}
                       </div>
                     </div>
 
