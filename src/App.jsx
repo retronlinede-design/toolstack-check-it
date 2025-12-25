@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
  * Added:
  * - Search box (filters items across all sections)
  * - Filter pills: All / Today / Overdue
+ * - Email (mailto:) summary (no PDF attachment)
  */
 
 const LS_KEY = "toolstack_checkit_v2";
@@ -135,7 +136,7 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
 export default function App() {
   const [title, setTitle] = useState("Check-It");
 
-  // NEW: Search + filter
+  // Search + filter
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all"); // all | today | overdue
 
@@ -202,7 +203,7 @@ export default function App() {
     });
   }, [sections]);
 
-  // NEW: filtered sections (for display/preview)
+  // Filtered sections (for display/preview)
   const filteredSections = useMemo(() => {
     const q = search.trim().toLowerCase();
     const t = todayISO();
@@ -241,6 +242,49 @@ export default function App() {
       return { id: s.id, total, done, left: Math.max(0, total - done), overdue };
     });
   }, [filteredSections]);
+
+  // NEW: build plain-text email summary of CURRENT VIEW (filtered)
+  const buildEmailText = () => {
+    const lines = [];
+    const now = new Date();
+    const iso = todayISO();
+
+    lines.push(`ToolStack • Check-It`);
+    lines.push(`Title: ${title || "Check-It"}`);
+    lines.push(`Date: ${iso}`);
+    lines.push(`Generated: ${now.toLocaleString()}`);
+    lines.push(``);
+    lines.push(`Summary: ${totals.done}/${totals.total} completed${totals.overdue ? ` • ${totals.overdue} overdue` : ""}`);
+    if (isFiltered) lines.push(`View: Filtered • Showing ${filteredTotals.total} item(s)`);
+    lines.push(``);
+
+    for (const s of filteredSections) {
+      const items = s.items || [];
+      if (!items.length) continue;
+      const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+      const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+
+      lines.push(`== ${s.name} ==`);
+      lines.push(isFiltered ? `Showing: ${stShown.total}/${stAll.total}` : `Items: ${stAll.total}`);
+      for (const it of items) {
+        const mark = it.done ? "[x]" : "[ ]";
+        const due = it.dueDate ? ` (due ${it.dueDate})` : "";
+        lines.push(`${mark} ${it.text}${due}`);
+      }
+      lines.push(``);
+    }
+
+    lines.push(`Link: https://toolstack-check-it.vercel.app`);
+    return lines.join("\n");
+  };
+
+  const emailCurrentView = () => {
+    const subject = `ToolStack Check-It: ${title || "Checklist"} (${todayISO()})`;
+    const body = buildEmailText();
+
+    const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  };
 
   const addSection = () => {
     setSections((prev) => [...prev, { id: uid(), name: `Section ${prev.length + 1}`, items: [] }]);
@@ -476,6 +520,12 @@ export default function App() {
             <SmallButton onClick={() => window.print()} disabled={totals.total === 0}>
               Print / Save PDF
             </SmallButton>
+
+            {/* NEW: Email summary */}
+            <SmallButton onClick={emailCurrentView} disabled={totals.total === 0} title="Open email with a summary (no attachment)">
+              Email
+            </SmallButton>
+
             <SmallButton onClick={exportJSON}>Export</SmallButton>
 
             <label className={`${btnPrimary} cursor-pointer`}>
@@ -502,7 +552,7 @@ export default function App() {
                 <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
 
-              {/* NEW: Search + Filter */}
+              {/* Search + Filter */}
               <div>
                 <label className="text-sm text-neutral-700 font-medium">Search</label>
                 <input
@@ -564,6 +614,10 @@ export default function App() {
                 {isFiltered ? (
                   <div className="mt-2 text-xs text-neutral-500">Showing {filteredTotals.total} item(s) (filtered)</div>
                 ) : null}
+
+                <div className="mt-2 text-xs text-neutral-500">
+                  Email sends a text summary (no PDF attachment). Use “Print / Save PDF” to attach a PDF manually.
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -604,9 +658,7 @@ export default function App() {
                       />
                       <div className="text-xs text-neutral-500 mt-1">
                         {st.done}/{st.total} done • {st.left} left{st.overdue ? ` • ${st.overdue} overdue` : ""}
-                        {isFiltered ? (
-                          <span className="ml-2">• showing {stShown.total}/{stAll.total}</span>
-                        ) : null}
+                        {isFiltered ? <span className="ml-2">• showing {stShown.total}/{stAll.total}</span> : null}
                       </div>
                     </div>
 
@@ -634,7 +686,7 @@ export default function App() {
                               className={`flex items-start gap-3 rounded-2xl p-2 border ${
                                 overdue ? "border-red-200 bg-red-50" : "border-neutral-200 bg-white"
                               }`}
-                              onDragOver={onDragOverItem()}
+                              onDragOver={(e) => e.preventDefault()}
                               onDrop={onDropItem(s.id, idx)}
                             >
                               <button
