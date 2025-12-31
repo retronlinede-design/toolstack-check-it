@@ -61,13 +61,51 @@ function SmallButton({ children, onClick, tone = "default", disabled, title, cla
   );
 }
 
+/** Normalized Top Actions (mobile-aligned “table/grid”) */
+const ACTION_BASE =
+  "print:hidden h-10 w-full rounded-xl text-sm font-medium border transition shadow-sm active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center";
+
+function ActionButton({ children, onClick, tone = "default", disabled, title }) {
+  const cls =
+    tone === "primary"
+      ? "bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900"
+      : tone === "danger"
+        ? "bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
+        : "bg-white hover:bg-neutral-50 text-neutral-900 border-neutral-200";
+
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} title={title} className={`${ACTION_BASE} ${cls}`}>
+      {children}
+    </button>
+  );
+}
+
+function ActionFileButton({ children, onFile, accept = "application/json", tone = "primary", title }) {
+  const cls =
+    tone === "primary"
+      ? "bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900"
+      : "bg-white hover:bg-neutral-50 text-neutral-900 border-neutral-200";
+
+  return (
+    <label title={title} className={`${ACTION_BASE} ${cls} cursor-pointer`}>
+      <span>{children}</span>
+      <input
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={(e) => onFile?.(e.target.files?.[0] || null)}
+      />
+    </label>
+  );
+}
+
 function Pill({ children, tone = "default" }) {
   const cls =
     tone === "accent"
       ? "border-lime-200 bg-lime-50 text-neutral-800"
       : tone === "warn"
-      ? "border-amber-200 bg-amber-50 text-neutral-800"
-      : "border-neutral-200 bg-white text-neutral-700";
+        ? "border-amber-200 bg-amber-50 text-neutral-800"
+        : "border-neutral-200 bg-white text-neutral-700";
 
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}`}>
@@ -243,7 +281,7 @@ export default function App() {
     });
   }, [filteredSections]);
 
-  // NEW: build plain-text email summary of CURRENT VIEW (filtered)
+  // build plain-text email summary of CURRENT VIEW (filtered)
   const buildEmailText = () => {
     const lines = [];
     const now = new Date();
@@ -254,7 +292,9 @@ export default function App() {
     lines.push(`Date: ${iso}`);
     lines.push(`Generated: ${now.toLocaleString()}`);
     lines.push(``);
-    lines.push(`Summary: ${totals.done}/${totals.total} completed${totals.overdue ? ` • ${totals.overdue} overdue` : ""}`);
+    lines.push(
+      `Summary: ${totals.done}/${totals.total} completed${totals.overdue ? ` • ${totals.overdue} overdue` : ""}`
+    );
     if (isFiltered) lines.push(`View: Filtered • Showing ${filteredTotals.total} item(s)`);
     lines.push(``);
 
@@ -281,7 +321,6 @@ export default function App() {
   const emailCurrentView = () => {
     const subject = `ToolStack Check-It: ${title || "Checklist"} (${todayISO()})`;
     const body = buildEmailText();
-
     const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
   };
@@ -374,10 +413,6 @@ export default function App() {
     try {
       e.dataTransfer.effectAllowed = "move";
     } catch {}
-  };
-
-  const onDragOverItem = () => (e) => {
-    e.preventDefault();
   };
 
   const onDropItem = (sectionId, toIndex) => (e) => {
@@ -474,10 +509,14 @@ export default function App() {
                                   }`}
                                 />
                                 <div className="min-w-0 flex-1">
-                                  <div className={`text-sm ${it.done ? "text-neutral-500 line-through" : "text-neutral-900"}`}>
+                                  <div
+                                    className={`text-sm ${it.done ? "text-neutral-500 line-through" : "text-neutral-900"}`}
+                                  >
                                     {it.text}
                                   </div>
-                                  {it.dueDate ? <div className="text-xs text-neutral-500 mt-0.5">Due: {it.dueDate}</div> : null}
+                                  {it.dueDate ? (
+                                    <div className="text-xs text-neutral-500 mt-0.5">Due: {it.dueDate}</div>
+                                  ) : null}
                                 </div>
                               </li>
                             ))}
@@ -499,7 +538,7 @@ export default function App() {
 
       <div className="max-w-6xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="text-2xl font-bold tracking-tight text-neutral-900">Check-It</div>
             <div className="text-sm text-neutral-600">Checklists, due dates, and drag-to-reorder.</div>
@@ -513,30 +552,27 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <SmallButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
-              Preview
-            </SmallButton>
-            <SmallButton onClick={() => window.print()} disabled={totals.total === 0}>
-              Print / Save PDF
-            </SmallButton>
-
-            {/* NEW: Email summary */}
-            <SmallButton onClick={emailCurrentView} disabled={totals.total === 0} title="Open email with a summary (no attachment)">
-              Email
-            </SmallButton>
-
-            <SmallButton onClick={exportJSON}>Export</SmallButton>
-
-            <label className={`${btnPrimary} cursor-pointer`}>
-              Import
-              <input
-                type="file"
-                className="hidden"
-                accept="application/json"
-                onChange={(e) => importJSON(e.target.files?.[0] || null)}
-              />
-            </label>
+          {/* Normalized top actions (grid “table”) */}
+          <div className="w-full sm:w-[680px]">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+              <ActionButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
+                Preview
+              </ActionButton>
+              <ActionButton onClick={() => window.print()} disabled={totals.total === 0}>
+                Print / Save PDF
+              </ActionButton>
+              <ActionButton
+                onClick={emailCurrentView}
+                disabled={totals.total === 0}
+                title="Open email with a summary (no attachment)"
+              >
+                Email
+              </ActionButton>
+              <ActionButton onClick={exportJSON}>Export</ActionButton>
+              <ActionFileButton onFile={(f) => importJSON(f)} tone="primary">
+                Import
+              </ActionFileButton>
+            </div>
           </div>
         </div>
 
@@ -644,7 +680,8 @@ export default function App() {
           <div className="lg:col-span-2 space-y-3">
             {filteredSections.map((s) => {
               const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
-              const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+              const stShown =
+                filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
               const st = isFiltered ? stShown : stAll;
 
               return (
