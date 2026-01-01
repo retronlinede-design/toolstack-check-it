@@ -14,6 +14,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
  * - Search box (filters items across all sections)
  * - Filter pills: All / Today / Overdue
  * - Email (mailto:) summary (no PDF attachment)
+ * - Help “?” icon pinned far-right (Help Pack v1 modal)
  */
 
 const LS_KEY = "toolstack_checkit_v2";
@@ -171,8 +172,77 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
   );
 }
 
+// Help Pack v1 (modal)
+function HelpModal({ open, onClose }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative w-full max-w-2xl rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
+        <div className="p-4 border-b border-neutral-100 flex items-start justify-between gap-4">
+          <div>
+            <div className="text-lg font-semibold text-neutral-900">Help</div>
+            <div className="text-sm text-neutral-600 mt-1">How saving works in ToolStack apps.</div>
+            <div className="mt-3 h-[2px] w-52 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
+          </div>
+          <button
+            type="button"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900 transition"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+
+        <div className="p-4 space-y-4 text-sm text-neutral-700">
+          <div className="rounded-2xl border border-neutral-200 p-4">
+            <div className="font-semibold text-neutral-900">Autosave (default)</div>
+            <p className="mt-1 text-neutral-600">
+              Your data saves automatically in this browser on this device (localStorage). If you clear browser data or
+              switch devices, it won’t follow automatically.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-neutral-200 p-4">
+            <div className="font-semibold text-neutral-900">Export (backup / move devices)</div>
+            <p className="mt-1 text-neutral-600">
+              Use <span className="font-medium">Export</span> to download a JSON backup file. Save it somewhere safe
+              (Drive/Dropbox/email to yourself).
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-neutral-200 p-4">
+            <div className="font-semibold text-neutral-900">Import (restore)</div>
+            <p className="mt-1 text-neutral-600">
+              Use <span className="font-medium">Import</span> to load a previous JSON backup and continue.
+            </p>
+          </div>
+
+          <div className="text-xs text-neutral-500">
+            Tip: Export once a week (or after big updates) so you always have a clean backup.
+          </div>
+        </div>
+
+        <div className="p-4 border-t border-neutral-100 flex items-center justify-end">
+          <button
+            type="button"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-900 bg-neutral-900 text-white hover:bg-neutral-800 transition"
+            onClick={onClose}
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [title, setTitle] = useState("Check-It");
+
+  // Help
+  const [helpOpen, setHelpOpen] = useState(false);
 
   // Search + filter
   const [search, setSearch] = useState("");
@@ -444,6 +514,8 @@ export default function App() {
         `}</style>
       ) : null}
 
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+
       <ConfirmModal
         open={confirm.open}
         title="Delete section?"
@@ -552,26 +624,38 @@ export default function App() {
             </div>
           </div>
 
-          {/* Normalized top actions (grid “table”) */}
+          {/* Normalized top actions (grid “table”) + pinned Help icon */}
           <div className="w-full sm:w-[680px]">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-              <ActionButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
-                Preview
-              </ActionButton>
-              <ActionButton onClick={() => window.print()} disabled={totals.total === 0}>
-                Print / Save PDF
-              </ActionButton>
-              <ActionButton
-                onClick={emailCurrentView}
-                disabled={totals.total === 0}
-                title="Open email with a summary (no attachment)"
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 pr-12">
+                <ActionButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
+                  Preview
+                </ActionButton>
+                <ActionButton onClick={() => window.print()} disabled={totals.total === 0}>
+                  Print / Save PDF
+                </ActionButton>
+                <ActionButton
+                  onClick={emailCurrentView}
+                  disabled={totals.total === 0}
+                  title="Open email with a summary (no attachment)"
+                >
+                  Email
+                </ActionButton>
+                <ActionButton onClick={exportJSON}>Export</ActionButton>
+                <ActionFileButton onFile={(f) => importJSON(f)} tone="primary">
+                  Import
+                </ActionFileButton>
+              </div>
+
+              <button
+                type="button"
+                title="Help"
+                onClick={() => setHelpOpen(true)}
+                className="print:hidden absolute right-0 top-0 h-10 w-10 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 shadow-sm flex items-center justify-center font-bold text-neutral-900"
+                aria-label="Help"
               >
-                Email
-              </ActionButton>
-              <ActionButton onClick={exportJSON}>Export</ActionButton>
-              <ActionFileButton onFile={(f) => importJSON(f)} tone="primary">
-                Import
-              </ActionFileButton>
+                ?
+              </button>
             </div>
           </div>
         </div>
