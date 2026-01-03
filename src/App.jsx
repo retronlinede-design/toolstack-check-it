@@ -44,7 +44,7 @@ function arrayMove(arr, from, to) {
 const btnSecondary =
   "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white shadow-sm hover:bg-neutral-50 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
 const btnPrimary =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-900 bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-700 bg-neutral-700 text-white shadow-sm hover:bg-neutral-600 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
 const btnDanger =
   "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 text-red-700 shadow-sm hover:bg-red-100 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
 const inputBase =
@@ -69,10 +69,10 @@ const ACTION_BASE =
 function ActionButton({ children, onClick, tone = "default", disabled, title }) {
   const cls =
     tone === "primary"
-      ? "bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900"
+      ? "bg-neutral-700 hover:bg-neutral-600 text-white border-neutral-700"
       : tone === "danger"
         ? "bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
-        : "bg-white hover:bg-neutral-50 text-neutral-900 border-neutral-200";
+        : "bg-white hover:bg-neutral-50 text-neutral-700 border-neutral-200";
 
   return (
     <button type="button" onClick={onClick} disabled={disabled} title={title} className={`${ACTION_BASE} ${cls}`}>
@@ -84,8 +84,8 @@ function ActionButton({ children, onClick, tone = "default", disabled, title }) 
 function ActionFileButton({ children, onFile, accept = "application/json", tone = "primary", title }) {
   const cls =
     tone === "primary"
-      ? "bg-neutral-900 hover:bg-neutral-800 text-white border-neutral-900"
-      : "bg-white hover:bg-neutral-50 text-neutral-900 border-neutral-200";
+      ? "bg-neutral-700 hover:bg-neutral-600 text-white border-neutral-700"
+      : "bg-white hover:bg-neutral-50 text-neutral-700 border-neutral-200";
 
   return (
     <label title={title} className={`${ACTION_BASE} ${cls} cursor-pointer`}>
@@ -106,7 +106,7 @@ function Pill({ children, tone = "default" }) {
       ? "border-lime-200 bg-lime-50 text-neutral-800"
       : tone === "warn"
         ? "border-amber-200 bg-amber-50 text-neutral-800"
-        : "border-neutral-200 bg-white text-neutral-700";
+        : "border-neutral-200 bg-white text-neutral-800";
 
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}`}>
@@ -121,7 +121,7 @@ function Checkbox({ checked, onChange }) {
       type="button"
       onClick={() => onChange(!checked)}
       className={`h-5 w-5 rounded-md border flex items-center justify-center transition ${
-        checked ? "bg-neutral-900 border-neutral-900" : "bg-white border-neutral-300 hover:bg-neutral-50"
+        checked ? "bg-neutral-800 border-neutral-800" : "bg-white border-neutral-300 hover:bg-neutral-50"
       }`}
       aria-label={checked ? "Uncheck" : "Check"}
     >
@@ -147,14 +147,14 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
       <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
       <div className="relative w-full max-w-md rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
         <div className="p-4 border-b border-neutral-100">
-          <div className="text-lg font-semibold text-neutral-900">{title}</div>
-          <div className="text-sm text-neutral-600 mt-1">{message}</div>
+          <div className="text-lg font-semibold text-neutral-800">{title}</div>
+          <div className="text-sm text-neutral-700 mt-1">{message}</div>
           <div className="mt-3 h-[2px] w-40 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
         </div>
         <div className="p-4 flex items-center justify-end gap-2">
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900 transition"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 transition"
             onClick={onCancel}
           >
             Cancel
@@ -182,13 +182,13 @@ function HelpModal({ open, onClose }) {
       <div className="relative w-full max-w-2xl rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
         <div className="p-4 border-b border-neutral-100 flex items-start justify-between gap-4">
           <div>
-            <div className="text-lg font-semibold text-neutral-900">Help</div>
-            <div className="text-sm text-neutral-600 mt-1">How saving works in ToolStack apps.</div>
+            <div className="text-lg font-semibold text-neutral-800">Help</div>
+            <div className="text-sm text-neutral-700 mt-1">How saving works in ToolStack apps.</div>
             <div className="mt-3 h-[2px] w-52 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
           </div>
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900 transition"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 transition"
             onClick={onClose}
           >
             Close
@@ -197,37 +197,35 @@ function HelpModal({ open, onClose }) {
 
         <div className="p-4 space-y-4 text-sm text-neutral-700">
           <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-900">Autosave (default)</div>
-            <p className="mt-1 text-neutral-600">
+            <div className="font-semibold text-neutral-800">Autosave (default)</div>
+            <p className="mt-1 text-neutral-700">
               Your data saves automatically in this browser on this device (localStorage). If you clear browser data or
               switch devices, it won’t follow automatically.
             </p>
           </div>
 
           <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-900">Export (backup / move devices)</div>
-            <p className="mt-1 text-neutral-600">
+            <div className="font-semibold text-neutral-800">Export (backup / move devices)</div>
+            <p className="mt-1 text-neutral-700">
               Use <span className="font-medium">Export</span> to download a JSON backup file. Save it somewhere safe
               (Drive/Dropbox/email to yourself).
             </p>
           </div>
 
           <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-900">Import (restore)</div>
-            <p className="mt-1 text-neutral-600">
+            <div className="font-semibold text-neutral-800">Import (restore)</div>
+            <p className="mt-1 text-neutral-700">
               Use <span className="font-medium">Import</span> to load a previous JSON backup and continue.
             </p>
           </div>
 
-          <div className="text-xs text-neutral-500">
-            Tip: Export once a week (or after big updates) so you always have a clean backup.
-          </div>
+          <div className="text-xs text-neutral-600">Tip: Export once a week (or after big updates) so you always have a clean backup.</div>
         </div>
 
         <div className="p-4 border-t border-neutral-100 flex items-center justify-end">
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-900 bg-neutral-900 text-white hover:bg-neutral-800 transition"
+            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600 transition"
             onClick={onClose}
           >
             Got it
@@ -236,6 +234,17 @@ function HelpModal({ open, onClose }) {
       </div>
     </div>
   );
+}
+
+// DEV-only micro tests (kept tiny, no runtime impact in production builds)
+if (import.meta?.env?.DEV) {
+  console.assert(
+    JSON.stringify(arrayMove([1, 2, 3], 0, 2)) === JSON.stringify([2, 3, 1]),
+    "arrayMove should move item"
+  );
+  console.assert(safeParse("{\"a\":1}", null)?.a === 1, "safeParse should parse valid JSON");
+  console.assert(safeParse("not-json", "x") === "x", "safeParse should fallback on invalid JSON");
+  console.assert(/\d{4}-\d{2}-\d{2}/.test(todayISO()), "todayISO should be YYYY-MM-DD");
 }
 
 export default function App() {
@@ -361,18 +370,19 @@ export default function App() {
     lines.push(`Title: ${title || "Check-It"}`);
     lines.push(`Date: ${iso}`);
     lines.push(`Generated: ${now.toLocaleString()}`);
-    lines.push(``);
+    lines.push("");
     lines.push(
       `Summary: ${totals.done}/${totals.total} completed${totals.overdue ? ` • ${totals.overdue} overdue` : ""}`
     );
     if (isFiltered) lines.push(`View: Filtered • Showing ${filteredTotals.total} item(s)`);
-    lines.push(``);
+    lines.push("");
 
     for (const s of filteredSections) {
       const items = s.items || [];
       if (!items.length) continue;
       const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
-      const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+      const stShown =
+        filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
 
       lines.push(`== ${s.name} ==`);
       lines.push(isFiltered ? `Showing: ${stShown.total}/${stAll.total}` : `Items: ${stAll.total}`);
@@ -381,7 +391,7 @@ export default function App() {
         const due = it.dueDate ? ` (due ${it.dueDate})` : "";
         lines.push(`${mark} ${it.text}${due}`);
       }
-      lines.push(``);
+      lines.push("");
     }
 
     lines.push(`Link: https://toolstack-check-it.vercel.app`);
@@ -439,7 +449,9 @@ export default function App() {
 
   const deleteItem = (sectionId, itemId) => {
     setSections((prev) =>
-      prev.map((s) => (s.id === sectionId ? { ...s, items: (s.items || []).filter((it) => it.id !== itemId) } : s))
+      prev.map((s) =>
+        s.id === sectionId ? { ...s, items: (s.items || []).filter((it) => it.id !== itemId) } : s
+      )
     );
   };
 
@@ -498,7 +510,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+    <div className="min-h-screen bg-neutral-50 text-neutral-800">
       {/* Print rules */}
       <style>{`
         @media print { .print\\:hidden { display: none !important; } }
@@ -529,19 +541,13 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
           <div className="absolute inset-0 bg-black/40" onClick={() => setPreviewOpen(false)} />
           <div className="relative w-full max-w-5xl">
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="text-lg font-semibold text-white">Print preview</div>
+            <div className="mb-3 rounded-2xl bg-white border border-neutral-200 shadow-sm p-3 flex items-center justify-between gap-3">
+              <div className="text-lg font-semibold text-neutral-800">Print preview</div>
               <div className="flex items-center gap-2">
-                <button
-                  className="px-3 py-2 rounded-xl text-sm font-medium border border-white/40 bg-white/10 hover:bg-white/15 text-white transition"
-                  onClick={() => window.print()}
-                >
+                <button className={btnSecondary} onClick={() => window.print()}>
                   Print / Save PDF
                 </button>
-                <button
-                  className="px-3 py-2 rounded-xl text-sm font-medium border border-white/40 bg-white/10 hover:bg-white/15 text-white transition"
-                  onClick={() => setPreviewOpen(false)}
-                >
+                <button className={btnPrimary} onClick={() => setPreviewOpen(false)}>
                   Close
                 </button>
               </div>
@@ -551,22 +557,22 @@ export default function App() {
               <div id="checkit-print" className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-2xl font-bold tracking-tight text-neutral-900">{title || "Check-It"}</div>
-                    <div className="text-sm text-neutral-600">
+                    <div className="text-2xl font-bold tracking-tight text-neutral-800">{title || "Check-It"}</div>
+                    <div className="text-sm text-neutral-700">
                       {totals.done}/{totals.total} completed{totals.overdue ? ` • ${totals.overdue} overdue` : ""}
                       {isFiltered ? ` • showing ${filteredTotals.total} item(s)` : ""}
                     </div>
                     <div className="mt-3 h-[2px] w-72 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
                   </div>
-                  <div className="text-sm text-neutral-600">Generated: {new Date().toLocaleString()}</div>
+                  <div className="text-sm text-neutral-700">Generated: {new Date().toLocaleString()}</div>
                 </div>
 
                 <div className="mt-5 space-y-5">
                   {filteredSections.map((s) => (
                     <div key={s.id} className="rounded-2xl border border-neutral-200">
                       <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
-                        <div className="font-semibold text-neutral-900">{s.name}</div>
-                        <div className="text-xs text-neutral-500">
+                        <div className="font-semibold text-neutral-800">{s.name}</div>
+                        <div className="text-xs text-neutral-600">
                           {(s.items || []).filter((i) => i.done).length}/{(s.items || []).length}
                         </div>
                       </div>
@@ -577,31 +583,29 @@ export default function App() {
                               <li key={it.id} className="flex items-start gap-3">
                                 <div
                                   className={`mt-0.5 h-4 w-4 rounded border ${
-                                    it.done ? "bg-neutral-900 border-neutral-900" : "bg-white border-neutral-400"
+                                    it.done ? "bg-neutral-800 border-neutral-800" : "bg-white border-neutral-400"
                                   }`}
                                 />
                                 <div className="min-w-0 flex-1">
                                   <div
-                                    className={`text-sm ${it.done ? "text-neutral-500 line-through" : "text-neutral-900"}`}
+                                    className={`text-sm ${it.done ? "text-neutral-600 line-through" : "text-neutral-800"}`}
                                   >
                                     {it.text}
                                   </div>
-                                  {it.dueDate ? (
-                                    <div className="text-xs text-neutral-500 mt-0.5">Due: {it.dueDate}</div>
-                                  ) : null}
+                                  {it.dueDate ? <div className="text-xs text-neutral-600 mt-0.5">Due: {it.dueDate}</div> : null}
                                 </div>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <div className="text-sm text-neutral-500">(no items)</div>
+                          <div className="text-sm text-neutral-600">(no items)</div>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-5 text-xs text-neutral-500">ToolStack • Check-It</div>
+                <div className="mt-5 text-xs text-neutral-600">ToolStack • Check-It</div>
               </div>
             </div>
           </div>
@@ -612,8 +616,8 @@ export default function App() {
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <div className="text-2xl font-bold tracking-tight text-neutral-900">Check-It</div>
-            <div className="text-sm text-neutral-600">Checklists, due dates, and drag-to-reorder.</div>
+            <div className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-700"><span>Check</span><span className="text-lime-500">It</span></div>
+            <div className="text-sm text-neutral-700">Checklists, due dates, and drag-to-reorder.</div>
             <div className="mt-3 h-[2px] w-80 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
             <div className="mt-3 flex flex-wrap gap-2">
               <Pill tone="accent">{totals.left} left</Pill>
@@ -651,7 +655,7 @@ export default function App() {
                 type="button"
                 title="Help"
                 onClick={() => setHelpOpen(true)}
-                className="print:hidden absolute right-0 top-0 h-10 w-10 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 shadow-sm flex items-center justify-center font-bold text-neutral-900"
+                className="print:hidden absolute right-0 top-0 h-10 w-10 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 shadow-sm flex items-center justify-center font-bold text-neutral-800"
                 aria-label="Help"
               >
                 ?
@@ -664,7 +668,7 @@ export default function App() {
           {/* Controls */}
           <div className={`${card}`}>
             <div className={`${cardHead}`}>
-              <div className="font-semibold text-neutral-900">Controls</div>
+              <div className="font-semibold text-neutral-800">Controls</div>
             </div>
             <div className={`${cardPad} space-y-3`}>
               <div>
@@ -687,8 +691,8 @@ export default function App() {
                     type="button"
                     className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
                       filter === "all"
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
                     }`}
                     onClick={() => setFilter("all")}
                   >
@@ -698,8 +702,8 @@ export default function App() {
                     type="button"
                     className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
                       filter === "today"
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
                     }`}
                     onClick={() => setFilter("today")}
                   >
@@ -709,8 +713,8 @@ export default function App() {
                     type="button"
                     className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
                       filter === "overdue"
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-900"
+                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
                     }`}
                     onClick={() => setFilter("overdue")}
                   >
@@ -732,10 +736,10 @@ export default function App() {
                 </div>
 
                 {isFiltered ? (
-                  <div className="mt-2 text-xs text-neutral-500">Showing {filteredTotals.total} item(s) (filtered)</div>
+                  <div className="mt-2 text-xs text-neutral-600">Showing {filteredTotals.total} item(s) (filtered)</div>
                 ) : null}
 
-                <div className="mt-2 text-xs text-neutral-500">
+                <div className="mt-2 text-xs text-neutral-600">
                   Email sends a text summary (no PDF attachment). Use “Print / Save PDF” to attach a PDF manually.
                 </div>
               </div>
@@ -756,7 +760,7 @@ export default function App() {
                 </SmallButton>
               </div>
 
-              <div className="text-xs text-neutral-500">Tip: drag the handle (≡) to reorder items inside a section.</div>
+              <div className="text-xs text-neutral-600">Tip: drag the handle (≡) to reorder items inside a section.</div>
             </div>
           </div>
 
@@ -773,11 +777,11 @@ export default function App() {
                   <div className={`${cardHead} flex items-center justify-between gap-3`}>
                     <div className="min-w-0">
                       <input
-                        className="w-full font-semibold text-neutral-900 bg-transparent outline-none"
+                        className="w-full font-semibold text-neutral-800 bg-transparent outline-none"
                         value={s.name}
                         onChange={(e) => renameSection(s.id, e.target.value)}
                       />
-                      <div className="text-xs text-neutral-500 mt-1">
+                      <div className="text-xs text-neutral-600 mt-1">
                         {st.done}/{st.total} done • {st.left} left{st.overdue ? ` • ${st.overdue} overdue` : ""}
                         {isFiltered ? <span className="ml-2">• showing {stShown.total}/{stAll.total}</span> : null}
                       </div>
@@ -829,8 +833,8 @@ export default function App() {
                                   <input
                                     className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300 ${
                                       it.done
-                                        ? "border-neutral-200 bg-neutral-50 text-neutral-500 line-through"
-                                        : "border-neutral-200 bg-white text-neutral-900"
+                                        ? "border-neutral-200 bg-neutral-50 text-neutral-600 line-through"
+                                        : "border-neutral-200 bg-white text-neutral-800"
                                     }`}
                                     value={it.text}
                                     onChange={(e) => updateItem(s.id, it.id, { text: e.target.value })}
@@ -861,7 +865,7 @@ export default function App() {
                         })}
                       </ul>
                     ) : (
-                      <div className="text-sm text-neutral-500">No items yet. Click “Add item”.</div>
+                      <div className="text-sm text-neutral-600">No items yet. Click “Add item”.</div>
                     )}
                   </div>
                 </div>
@@ -871,7 +875,7 @@ export default function App() {
         </div>
 
         {toast ? (
-          <div className="fixed bottom-6 right-6 rounded-2xl bg-neutral-900 text-white px-4 py-3 shadow-xl print:hidden">
+          <div className="fixed bottom-6 right-6 rounded-2xl bg-neutral-800 text-white px-4 py-3 shadow-xl print:hidden">
             <div className="text-sm">{toast}</div>
           </div>
         ) : null}
