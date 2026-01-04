@@ -616,8 +616,8 @@ export default function App() {
         {/* Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <div className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-700"><span>Check</span><span className="text-lime-500">It</span></div>
-            <div className="text-sm text-neutral-700">Checklists, due dates, and drag-to-reorder.</div>
+            <div className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-700"><span>Check</span><span className="text-[#D5FF00]">It</span></div>
+            <div className="text-sm text-neutral-700">Simple daily Checklist to help manage your day</div>
             <div className="mt-3 h-[2px] w-80 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
             <div className="mt-3 flex flex-wrap gap-2">
               <Pill tone="accent">{totals.left} left</Pill>
