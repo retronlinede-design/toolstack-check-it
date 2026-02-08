@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import checkitLogo from "./assets/checkit-logo.png";
 
 /**
  * ToolStack — Check-It (Styled v1: grey + lime/green accent)
@@ -51,11 +52,11 @@ const sanitizeCollapsedById = (m) => {
 };
 
 const btnSecondary =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white shadow-sm hover:bg-neutral-50 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200 shadow-sm";
 const btnPrimary =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-neutral-700 bg-neutral-700 text-white shadow-sm hover:bg-neutral-600 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-[#D5FF00]/30 border-[#D5FF00]/30 text-neutral-800 shadow-sm hover:bg-white hover:border-neutral-200";
 const btnDanger =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 text-red-700 shadow-sm hover:bg-red-100 active:translate-y-[1px] transition disabled:opacity-50 disabled:cursor-not-allowed";
+  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 hover:bg-red-100 text-red-700 border-red-200 shadow-sm";
 const inputBase =
   "mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300";
 const card = "rounded-2xl bg-white border border-neutral-200 shadow-sm";
@@ -73,31 +74,31 @@ function SmallButton({ children, onClick, tone = "default", disabled, title, cla
 
 /** Normalized Top Actions (mobile-aligned “table/grid”) */
 const ACTION_BASE =
-  "print:hidden h-10 w-full rounded-xl text-sm font-medium border transition shadow-sm active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center";
+  "print:hidden h-9 px-6 rounded-xl text-xs font-medium border transition shadow-sm active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center";
 
-function ActionButton({ children, onClick, tone = "default", disabled, title }) {
+function ActionButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
   const cls =
     tone === "primary"
-      ? "bg-neutral-700 hover:bg-neutral-600 text-white border-neutral-700"
+      ? "bg-[#D5FF00]/30 border-[#D5FF00]/30 text-neutral-800 hover:bg-white hover:border-neutral-200"
       : tone === "danger"
         ? "bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
-        : "bg-white hover:bg-neutral-50 text-neutral-700 border-neutral-200";
+        : "bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200";
 
   return (
-    <button type="button" onClick={onClick} disabled={disabled} title={title} className={`${ACTION_BASE} ${cls}`}>
+    <button type="button" onClick={onClick} disabled={disabled} title={title} className={`${ACTION_BASE} ${cls} ${className}`}>
       {children}
     </button>
   );
 }
 
-function ActionFileButton({ children, onFile, accept = "application/json", tone = "primary", title }) {
+function ActionFileButton({ children, onFile, accept = "application/json", tone = "primary", title, className = "" }) {
   const cls =
     tone === "primary"
-      ? "bg-neutral-700 hover:bg-neutral-600 text-white border-neutral-700"
-      : "bg-white hover:bg-neutral-50 text-neutral-700 border-neutral-200";
+      ? "bg-[#D5FF00]/30 border-[#D5FF00]/30 text-neutral-800 hover:bg-white hover:border-neutral-200"
+      : "bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200";
 
   return (
-    <label title={title} className={`${ACTION_BASE} ${cls} cursor-pointer`}>
+    <label title={title} className={`${ACTION_BASE} ${cls} cursor-pointer ${className}`}>
       <span>{children}</span>
       <input
         type="file"
@@ -106,21 +107,6 @@ function ActionFileButton({ children, onFile, accept = "application/json", tone 
         onChange={(e) => onFile?.(e.target.files?.[0] || null)}
       />
     </label>
-  );
-}
-
-function Pill({ children, tone = "default" }) {
-  const cls =
-    tone === "accent"
-      ? "border-lime-200 bg-lime-50 text-neutral-800"
-      : tone === "warn"
-        ? "border-amber-200 bg-amber-50 text-neutral-800"
-        : "border-neutral-200 bg-white text-neutral-800";
-
-  return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}`}>
-      {children}
-    </span>
   );
 }
 
@@ -494,6 +480,128 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
   );
 }
 
+function HelpModal({ open, onClose, t }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+      <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      
+      <div className="relative w-full max-w-lg transform transition-all">
+        {/* Decorative background offset */}
+        <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20" />
+        
+        <div className="relative bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+          {/* Header */}
+          <div className="relative p-6 pb-2 flex items-start justify-between">
+            <div className="transform -rotate-2">
+              <h2 className="text-5xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
+                {t.help}
+              </h2>
+              <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
+            </div>
+            <button
+              type="button"
+              className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-8 space-y-6">
+            <p className="text-lg text-neutral-300 font-medium leading-relaxed">
+              <strong className="text-[#D5FF00] font-black tracking-tight text-xl">Check-It</strong> is your daily grind manager. Keep it simple, keep it moving.
+            </p>
+            
+            <ul className="space-y-4">
+              {[
+                "Add sections & items to organize the chaos.",
+                "Drag the handle (≡) to switch up priorities.",
+                "Set due dates. Don't let tasks rot.",
+                "Hit Preview to print or save a PDF.",
+                "Export data to keep it safe or share it."
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-neutral-400 font-medium">
+                  <div className="mt-1.5 h-2.5 w-2.5 bg-[#D5FF00] shrink-0 rotate-45 shadow-[0_0_10px_#D5FF00]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="pt-6 border-t border-neutral-800 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-500 tracking-widest uppercase">
+                ToolStack • Check-It
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExportModal({ open, onClose, t, actions }) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+      <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      
+      <div className="relative w-full max-w-sm transform transition-all">
+        {/* Decorative background offset */}
+        <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20" />
+        
+        <div className="relative bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+          {/* Header */}
+          <div className="relative p-6 pb-2 flex items-start justify-between">
+            <div className="transform -rotate-2">
+              <h2 className="text-4xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
+                {t.exportImport}
+              </h2>
+              <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
+            </div>
+            <button
+              type="button"
+              className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+              onClick={onClose}
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-8 space-y-4">
+            <p className="text-neutral-400 text-sm font-medium mb-2">
+              Manage your data. Keep it safe.
+            </p>
+
+            <ActionButton onClick={() => { actions.email(); onClose(); }} disabled={actions.disabled} className="!bg-white !border-white !text-neutral-900 hover:!bg-neutral-200">
+              {t.email}
+            </ActionButton>
+            
+            <div className="h-px bg-neutral-800 my-2" />
+            
+            <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-white !border-white !text-neutral-900 hover:!bg-neutral-200">
+              {t.export}
+            </ActionButton>
+            
+            <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-white">
+              {t.import}
+            </ActionFileButton>
+
+            <div className="pt-4 border-t border-neutral-800 text-center mt-4">
+              <div className="inline-block px-4 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-500 tracking-widest uppercase">
+                JSON Data
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm, onCancel }) {
   if (!open) return null;
   return (
@@ -519,81 +627,6 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
             onClick={onConfirm}
           >
             {confirmText}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Help Pack v1 (modal)
-function HelpModal({ open, onClose, lang = "en" }) {
-  if (!open) return null;
-
-  const title = lang === "de" ? "Hilfe" : "Help";
-  const subtitle = lang === "de" ? "So funktioniert das Speichern in ToolStack-Apps." : "How saving works in ToolStack apps.";
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-2xl rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
-        <div className="p-4 border-b border-neutral-100 flex items-start justify-between gap-4">
-          <div>
-            <div className="text-lg font-semibold text-neutral-800">{title}</div>
-            <div className="text-sm text-neutral-700 mt-1">{subtitle}</div>
-            <div className="mt-3 h-[2px] w-52 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
-          </div>
-          <button
-            type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 transition"
-            onClick={onClose}
-          >
-            {lang === "de" ? "Schließen" : "Close"}
-          </button>
-        </div>
-
-        <div className="p-4 space-y-4 text-sm text-neutral-700">
-          <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-800">{lang === "de" ? "Autosave (Standard)" : "Autosave (default)"}</div>
-            <p className="mt-1 text-neutral-700">
-              {lang === "de"
-                ? "Deine Daten speichern automatisch in diesem Browser auf diesem Gerät (localStorage). Wenn du Browserdaten löschst oder das Gerät wechselst, sind sie nicht automatisch mit dabei."
-                : "Your data saves automatically in this browser on this device (localStorage). If you clear browser data or switch devices, it won’t follow automatically."}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-800">{lang === "de" ? "Export (Backup / Gerätewechsel)" : "Export (backup / move devices)"}</div>
-            <p className="mt-1 text-neutral-700">
-              {lang === "de"
-                ? "Nutze Export, um eine JSON-Backup-Datei herunterzuladen. Speichere sie sicher (Drive/Dropbox oder mail an dich selbst)."
-                : "Use Export to download a JSON backup file. Save it somewhere safe (Drive/Dropbox/email to yourself)."}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-neutral-200 p-4">
-            <div className="font-semibold text-neutral-800">{lang === "de" ? "Import (Wiederherstellen)" : "Import (restore)"}</div>
-            <p className="mt-1 text-neutral-700">
-              {lang === "de"
-                ? "Nutze Import, um ein früheres JSON-Backup zu laden und weiterzumachen."
-                : "Use Import to load a previous JSON backup and continue."}
-            </p>
-          </div>
-
-          <div className="text-xs text-neutral-600">
-            {lang === "de"
-              ? "Tipp: Exportiere einmal pro Woche (oder nach großen Updates), damit du immer ein sauberes Backup hast."
-              : "Tip: Export once a week (or after big updates) so you always have a clean backup."}
-          </div>
-        </div>
-
-        <div className="p-4 border-t border-neutral-100 flex items-center justify-end">
-          <button
-            type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600 transition"
-            onClick={onClose}
-          >
-            {lang === "de" ? "Alles klar" : "Got it"}
           </button>
         </div>
       </div>
@@ -628,6 +661,9 @@ export default function App() {
     const dict = {
       en: {
         tagline: "Simple daily checklist to help manage your day",
+        help: "Help",
+        menu: "Menu",
+        language: "Language",
         controls: "Controls",
         checklistTitle: "Checklist title",
         search: "Search",
@@ -664,9 +700,13 @@ export default function App() {
         done: "done",
         total: "total",
         overdueLabel: "overdue",
+        exportImport: "Export / Import",
       },
       de: {
         tagline: "Einfache tägliche Checkliste für deinen Tag",
+        help: "Hilfe",
+        menu: "Menü",
+        language: "Sprache",
         controls: "Steuerung",
         checklistTitle: "Titel der Checkliste",
         search: "Suche",
@@ -703,12 +743,14 @@ export default function App() {
         done: "erledigt",
         total: "gesamt",
         overdueLabel: "überfällig",
+        exportImport: "Export / Import",
       },
     };
     return dict[lang] || dict.en;
   }, [lang]);
 
   const [title, setTitle] = useState(() => String(saved?.title || "Check-It"));
+  const [exportOpen, setExportOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
 
   // Search + filter
@@ -768,15 +810,19 @@ export default function App() {
     let total = 0;
     let done = 0;
     let overdue = 0;
+    let dueToday = 0;
     const tt = todayISO();
     for (const s of sections) {
       for (const it of s.items || []) {
         total += 1;
         if (it.done) done += 1;
-        if (!it.done && it.dueDate && it.dueDate < tt) overdue += 1;
+        if (!it.done && it.dueDate) {
+          if (it.dueDate < tt) overdue += 1;
+          if (it.dueDate === tt) dueToday += 1;
+        }
       }
     }
-    return { total, done, left: Math.max(0, total - done), overdue };
+    return { total, done, left: Math.max(0, total - done), overdue, dueToday };
   }, [sections]);
 
   const sectionTotals = useMemo(() => {
@@ -1009,7 +1055,19 @@ export default function App() {
         `}</style>
       ) : null}
 
-      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} lang={lang} />
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} t={t} />
+
+      <ExportModal
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        t={t}
+        actions={{
+          email: emailCurrentView,
+          export: exportJSON,
+          import: importJSON,
+          disabled: totals.total === 0
+        }}
+      />
 
       <ConfirmModal
         open={confirm.open}
@@ -1023,22 +1081,44 @@ export default function App() {
       {/* Preview Modal */}
       {previewOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setPreviewOpen(false)} />
-          <div className="relative w-full max-w-5xl">
-            <div className="mb-3 rounded-2xl bg-white border border-neutral-200 shadow-sm p-3 flex items-center justify-between gap-3">
-              <div className="text-lg font-semibold text-neutral-800">{t.printPreview}</div>
-              <div className="flex items-center gap-2">
-                <button className={btnSecondary} onClick={() => window.print()}>
-                  {t.printSave}
-                </button>
-                <button className={btnPrimary} onClick={() => setPreviewOpen(false)}>
-                  {t.close}
-                </button>
+          <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={() => setPreviewOpen(false)} />
+          
+          <div className="relative w-full max-w-5xl h-[85vh] flex flex-col transform transition-all">
+            {/* Decorative background offset */}
+            <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20 pointer-events-none" />
+            
+            <div className="relative flex flex-col h-full bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+              
+              {/* Header */}
+              <div className="relative p-6 pb-4 flex items-center justify-between shrink-0 border-b-2 border-neutral-800 bg-neutral-900 z-10">
+                <div className="transform -rotate-1">
+                  <h2 className="text-4xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
+                    {t.printPreview}
+                  </h2>
+                  <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <button 
+                    className="px-6 py-3 rounded-xl text-sm font-bold border-2 border-[#D5FF00] bg-[#D5FF00] text-neutral-900 hover:bg-white hover:border-white transition shadow-[4px_4px_0px_rgba(0,0,0,0.2)] uppercase tracking-wider"
+                    onClick={() => window.print()}
+                  >
+                    {t.printSave}
+                  </button>
+                  <button
+                    type="button"
+                    className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+                    onClick={() => setPreviewOpen(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-auto max-h-[80vh]">
-              <div id="checkit-print" className="p-6">
+              {/* Content Area - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-800/50">
+                <div className="mx-auto max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5">
+                  <div id="checkit-print" className="p-8 sm:p-12 min-h-[50vh]">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-2xl font-bold tracking-tight text-neutral-800">{title || "Check-It"}</div>
@@ -1092,312 +1172,360 @@ export default function App() {
 
                 <div className="mt-5 text-xs text-neutral-600">ToolStack • Check-It</div>
               </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       ) : null}
 
       <div className="max-w-6xl mx-auto p-4 sm:p-6">
-        {/* Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <div className="text-4xl sm:text-5xl font-black tracking-tight text-neutral-700">
-              <span>Check</span>
-              <span className="text-[#D5FF00]">It</span>
-            </div>
-            <div className="text-sm text-neutral-700">{t.tagline}</div>
-            <div className="mt-3 h-[2px] w-80 rounded-full bg-gradient-to-r from-[#D5FF00]/0 via-[#D5FF00] to-[#D5FF00]/0" />
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Pill tone="accent">
-                {totals.left} {t.left}
-              </Pill>
-              <Pill>
-                {totals.done} {t.done}
-              </Pill>
-              <Pill>
-                {totals.total} {t.total}
-              </Pill>
-              {totals.overdue ? (
-                <Pill tone="warn">
-                  {totals.overdue} {t.overdueLabel}
-                </Pill>
-              ) : null}
-              {isFiltered ? <Pill>{lang === "de" ? `Gefiltert: ${filteredTotals.total}` : `Filtered: ${filteredTotals.total}`}</Pill> : null}
-            </div>
-          </div>
-
-          {/* Actions + language toggle */}
-          <div className="w-full sm:w-[680px]">
-            <div className="flex items-center justify-end gap-2 mb-2 print:hidden">
-              <button
-                type="button"
-                className={`h-9 px-3 rounded-xl text-sm font-semibold border shadow-sm transition ${
-                  lang === "en" ? "bg-neutral-800 text-white border-neutral-800" : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50"
-                }`}
-                onClick={() => setLang("en")}
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                className={`h-9 px-3 rounded-xl text-sm font-semibold border shadow-sm transition ${
-                  lang === "de" ? "bg-neutral-800 text-white border-neutral-800" : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50"
-                }`}
-                onClick={() => setLang("de")}
-              >
-                DE
-              </button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          {/* Left Column: Logo, Status, Controls */}
+          <div className="flex flex-col gap-6">
+            <div className="relative flex flex-col gap-3 w-full">
+              <img src={checkitLogo} alt="CheckIt" className="h-20 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
             </div>
 
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 pr-12">
-                <ActionButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
-                  {t.preview}
-                </ActionButton>
-                <ActionButton onClick={() => setPreviewOpen(true)} disabled={totals.total === 0}>
-                  {t.printSave}
-                </ActionButton>
-                <ActionButton onClick={emailCurrentView} disabled={totals.total === 0} title={lang === "de" ? "E-Mail mit Zusammenfassung öffnen (kein Anhang)" : "Open email with a summary (no attachment)"}>
-                  {t.email}
-                </ActionButton>
-                <ActionButton onClick={exportJSON}>{t.export}</ActionButton>
-                <ActionFileButton onFile={(f) => importJSON(f)} tone="primary">
-                  {t.import}
-                </ActionFileButton>
-              </div>
-
-              <button
-                type="button"
-                title={t.title}
-                onClick={() => setHelpOpen(true)}
-                className="print:hidden absolute right-0 top-0 h-10 w-10 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 shadow-sm flex items-center justify-center font-bold text-neutral-800"
-                aria-label="Help"
-              >
-                ?
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-3">
-          {/* Controls */}
-          <div className={`${card}`}>
-            <div className={`${cardHead}`}>
-              <div className="font-semibold text-neutral-800">{t.controls}</div>
-            </div>
-            <div className={`${cardPad} space-y-3`}>
-              <div>
-                <label className="text-sm text-neutral-700 font-medium">{t.checklistTitle}</label>
-                <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
-              </div>
-
-              {/* Search + Filter */}
-              <div>
-                <label className="text-sm text-neutral-700 font-medium">{t.search}</label>
-                <input className={inputBase} value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.searchPh} />
-
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
-                      filter === "all"
-                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
-                    }`}
-                    onClick={() => setFilter("all")}
-                  >
-                    {t.all}
-                  </button>
-                  <button
-                    type="button"
-                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
-                      filter === "today"
-                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
-                    }`}
-                    onClick={() => setFilter("today")}
-                  >
-                    {t.today}
-                  </button>
-                  <button
-                    type="button"
-                    className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
-                      filter === "overdue"
-                        ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
-                        : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
-                    }`}
-                    onClick={() => setFilter("overdue")}
-                  >
-                    {t.overdue}
-                  </button>
-
-                  {isFiltered ? (
-                    <button
-                      type="button"
-                      className={btnSecondary}
-                      onClick={() => {
-                        setSearch("");
-                        setFilter("all");
-                      }}
-                    >
-                      {t.clear}
-                    </button>
-                  ) : null}
-                </div>
-
-                {isFiltered ? (
-                  <div className="mt-2 text-xs text-neutral-600">
-                    {t.filteredShowing} {filteredTotals.total} {t.filteredItems}
-                  </div>
-                ) : null}
-
-                <div className="mt-2 text-xs text-neutral-600">{t.emailHint}</div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <SmallButton tone="primary" onClick={addSection} className="w-full">
-                  {t.addSection}
-                </SmallButton>
-                <SmallButton
-                  onClick={() => {
-                    setSections((prev) => prev.map((s) => ({ ...s, items: (s.items || []).filter((it) => !it.done) })));
-                    notify(lang === "de" ? "Erledigte gelöscht" : "Completed cleared");
-                  }}
-                  className="w-full"
-                  disabled={totals.done === 0}
-                >
-                  {t.clearDone}
-                </SmallButton>
-              </div>
-
-              <div className="text-xs text-neutral-600">{t.tipDrag}</div>
-            </div>
-          </div>
-
-          {/* Sections */}
-          <div className="lg:col-span-2 space-y-3">
-            {filteredSections.map((s) => {
-              const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
-              const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
-              const st = isFiltered ? stShown : stAll;
-              const collapsed = isSectionCollapsed(s.id);
-
-              return (
-                <div key={s.id} className={`${card}`}>
-                  <div className={`${cardHead} flex items-center justify-between gap-3`}>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => toggleSectionCollapsed(s.id)}
-                          title={collapsed ? t.expand : t.collapse}
-                          className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center"
-                          aria-label={collapsed ? t.expand : t.collapse}
-                        >
-                          {collapsed ? "▸" : "▾"}
-                        </button>
-                        <input
-                          className="flex-1 w-full font-semibold text-neutral-800 bg-transparent outline-none"
-                          value={s.name}
-                          onChange={(e) => renameSection(s.id, e.target.value)}
-                        />
-                      </div>
-                      <div className="text-xs text-neutral-600 mt-1">
-                        {st.done}/{st.total} {t.done} • {st.left} {t.left}
-                        {st.overdue ? ` • ${st.overdue} ${t.overdueLabel}` : ""}
-                        {isFiltered ? <span className="ml-2">• {t.filteredShowing} {stShown.total}/{stAll.total}</span> : null}
-                      </div>
+            <div className="w-full max-w-lg bg-white rounded-2xl border border-neutral-200 shadow-sm p-5">
+                <div className="flex items-end justify-between mb-4">
+                  <div>
+                    <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-1">
+                      {lang === "de" ? "Fortschritt" : "Progress"}
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <SmallButton onClick={() => addItem(s.id)}>{t.addItem}</SmallButton>
-                      <SmallButton
-                        tone="danger"
-                        onClick={() => requestDeleteSection(s.id)}
-                        disabled={sections.length === 1}
-                        title={sections.length === 1 ? t.keepOne : t.del}
-                      >
-                        {t.del}
-                      </SmallButton>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-black text-neutral-900 tracking-tight">
+                        {Math.round(totals.total > 0 ? (totals.done / totals.total) * 100 : 0)}%
+                      </span>
+                      <span className="text-sm font-medium text-neutral-500">
+                        {totals.done} / {totals.total}
+                      </span>
                     </div>
                   </div>
-
-                  <div className={`${cardPad}`}>
-                    {collapsed ? (
-                      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 flex items-center justify-between gap-3">
-                        <div className="text-sm text-neutral-700">
-                          <span className="font-medium text-neutral-800">{t.sectionCollapsed}.</span> {st.total} {lang === "de" ? "Eintrag/Einträge" : "item(s)"}
-                          {st.overdue ? ` • ${st.overdue} ${t.overdueLabel}` : ""}.
-                        </div>
-                        <SmallButton tone="primary" onClick={() => toggleSectionCollapsed(s.id)}>
-                          {t.expand}
-                        </SmallButton>
+                  
+                  <div className="flex gap-4 sm:gap-6">
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-0.5">{t.left}</div>
+                      <div className="text-2xl font-bold text-neutral-800">{totals.left}</div>
+                    </div>
+                    {totals.dueToday > 0 && (
+                      <div className="text-right">
+                        <div className="text-xs font-bold text-lime-600 uppercase tracking-wider mb-0.5">{t.today}</div>
+                        <div className="text-2xl font-bold text-lime-700">{totals.dueToday}</div>
                       </div>
-                    ) : (s.items || []).length ? (
-                      <ul className="space-y-3">
-                        {s.items.map((it, idx) => {
-                          const overdue = !it.done && it.dueDate && it.dueDate < todayISO();
-                          return (
-                            <li
-                              key={it.id}
-                              className={`flex items-start gap-3 rounded-2xl p-2 border ${
-                                overdue ? "border-red-200 bg-red-50" : "border-neutral-200 bg-white"
-                              }`}
-                              onDragOver={(e) => e.preventDefault()}
-                              onDrop={onDropItem(s.id, idx)}
-                            >
-                              <button
-                                type="button"
-                                draggable
-                                onDragStart={onDragStartItem(s.id, idx)}
-                                className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center cursor-grab active:cursor-grabbing"
-                                title={lang === "de" ? "Ziehen zum Sortieren" : "Drag to reorder"}
-                              >
-                                ≡
-                              </button>
-
-                              <div className="mt-2">
-                                <Checkbox checked={!!it.done} onChange={(v) => updateItem(s.id, it.id, { done: v })} />
-                              </div>
-
-                              <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-2">
-                                <div className="md:col-span-2">
-                                  <input
-                                    className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300 ${
-                                      it.done
-                                        ? "border-neutral-200 bg-neutral-50 text-neutral-600 line-through"
-                                        : "border-neutral-200 bg-white text-neutral-800"
-                                    }`}
-                                    value={it.text}
-                                    onChange={(e) => updateItem(s.id, it.id, { text: e.target.value })}
-                                  />
-                                </div>
-
-                                <div>
-                                  <DateField lang={lang} value={it.dueDate || ""} onChange={(v) => updateItem(s.id, it.id, { dueDate: v })} />
-                                  {overdue ? <div className="text-xs text-red-700 mt-1">{t.overdue}</div> : null}
-                                </div>
-                              </div>
-
-                              <button
-                                type="button"
-                                className="print:hidden px-2 py-2 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-700"
-                                onClick={() => deleteItem(s.id, it.id)}
-                                title={lang === "de" ? "Eintrag löschen" : "Delete item"}
-                              >
-                                ✕
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <div className="text-sm text-neutral-600">{t.noItemsYet}</div>
+                    )}
+                    {totals.overdue > 0 && (
+                      <div className="text-right">
+                        <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-0.5">{t.overdueLabel}</div>
+                        <div className="text-2xl font-bold text-red-600">{totals.overdue}</div>
+                      </div>
                     )}
                   </div>
                 </div>
-              );
-            })}
+
+                <div className="relative h-4 w-full bg-neutral-100 rounded-full overflow-hidden">
+                  <div 
+                    className="absolute top-0 left-0 h-full bg-[#D5FF00] transition-all duration-500 ease-out"
+                    style={{ width: `${totals.total > 0 ? (totals.done / totals.total) * 100 : 0}%` }}
+                  />
+                  {/* Diagonal stripes for texture */}
+                  <div 
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                      backgroundImage: "linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent)",
+                      backgroundSize: "16px 16px"
+                    }}
+                  />
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  {isFiltered ? (
+                    <div className="flex items-center gap-2 text-xs font-medium text-neutral-400 bg-neutral-50 px-3 py-1.5 rounded-lg w-fit">
+                      <div className="h-1.5 w-1.5 rounded-full bg-neutral-400" />
+                      {lang === "de" ? `Gefiltert: ${filteredTotals.total} angezeigt` : `Filtered view: ${filteredTotals.total} showing`}
+                    </div>
+                  ) : (
+                    <div className="text-xs font-medium text-neutral-400">
+                      {(() => {
+                        const pct = totals.total > 0 ? Math.round((totals.done / totals.total) * 100) : 0;
+                        if (pct === 100) return lang === "de" ? "Alles erledigt! 🎉" : "All done! 🎉";
+                        if (pct >= 75) return lang === "de" ? "Fast geschafft!" : "Almost there!";
+                        if (pct >= 50) return lang === "de" ? "Über die Hälfte!" : "Over halfway!";
+                        if (pct >= 25) return lang === "de" ? "Guter Anfang!" : "Good start!";
+                        return lang === "de" ? "Los geht's!" : "Let's go!";
+                      })()}
+                    </div>
+                  )}
+                </div>
+            </div>
+
+            {/* Controls */}
+            <div className={`${card}`}>
+              <div className={`${cardHead}`}>
+                <div className="font-semibold text-neutral-800">{t.controls}</div>
+              </div>
+              <div className={`${cardPad} space-y-3`}>
+                <div>
+                  <label className="text-sm text-neutral-700 font-medium">{t.checklistTitle}</label>
+                  <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
+                </div>
+
+                {/* Search + Filter */}
+                <div>
+                  <label className="text-sm text-neutral-700 font-medium">{t.search}</label>
+                  <input className={inputBase} value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.searchPh} />
+
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                        filter === "all"
+                          ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                          : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
+                      }`}
+                      onClick={() => setFilter("all")}
+                    >
+                      {t.all}
+                    </button>
+                    <button
+                      type="button"
+                      className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                        filter === "today"
+                          ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                          : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
+                      }`}
+                      onClick={() => setFilter("today")}
+                    >
+                      {t.today}
+                    </button>
+                    <button
+                      type="button"
+                      className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
+                        filter === "overdue"
+                          ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
+                          : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
+                      }`}
+                      onClick={() => setFilter("overdue")}
+                    >
+                      {t.overdue}
+                    </button>
+
+                    {isFiltered ? (
+                      <button
+                        type="button"
+                        className={btnSecondary}
+                        onClick={() => {
+                          setSearch("");
+                          setFilter("all");
+                        }}
+                      >
+                        {t.clear}
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {isFiltered ? (
+                    <div className="mt-2 text-xs text-neutral-600">
+                      {t.filteredShowing} {filteredTotals.total} {t.filteredItems}
+                    </div>
+                  ) : null}
+
+                  <div className="mt-2 text-xs text-neutral-600">{t.emailHint}</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <SmallButton tone="primary" onClick={addSection} className="w-full">
+                    {t.addSection}
+                  </SmallButton>
+                  <SmallButton
+                    onClick={() => {
+                      setSections((prev) => prev.map((s) => ({ ...s, items: (s.items || []).filter((it) => !it.done) })));
+                      notify(lang === "de" ? "Erledigte gelöscht" : "Completed cleared");
+                    }}
+                    className="w-full"
+                    disabled={totals.done === 0}
+                  >
+                    {t.clearDone}
+                  </SmallButton>
+                </div>
+
+                <div className="text-xs text-neutral-600">{t.tipDrag}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Actions, Sections */}
+          <div className="lg:col-span-2 flex flex-col gap-6">
+            {/* Actions */}
+            <div className="flex flex-col items-end lg:h-28 lg:justify-center">
+              <div className="relative flex justify-end gap-2 w-full">
+                <div className="flex items-center gap-2">
+                  <ActionButton onClick={() => {}}>HUB</ActionButton>
+                  <ActionButton onClick={() => setPreviewOpen(true)}>{t.preview}</ActionButton>
+                  <ActionButton onClick={() => setExportOpen(true)}>{t.export}</ActionButton>
+                </div>
+
+                <button
+                  type="button"
+                  title={t.help}
+                  onClick={() => setHelpOpen(true)}
+                    className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 shadow-sm flex items-center justify-center font-bold text-neutral-800 text-sm"
+                >
+                  ?
+                </button>
+
+                <div className="print:hidden absolute right-0 top-12">
+                    <div className="flex items-center gap-1 p-1 bg-white border border-neutral-200 rounded-xl w-fit shadow-sm">
+                    <button
+                      onClick={() => setLang("en")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                        lang === "en"
+                            ? "bg-[#D5FF00] text-neutral-800 shadow-sm"
+                            : "text-neutral-500 hover:text-neutral-800 hover:bg-[#D5FF00]/30"
+                      }`}
+                    >
+                      EN
+                    </button>
+                    <button
+                      onClick={() => setLang("de")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                        lang === "de"
+                            ? "bg-[#D5FF00] text-neutral-800 shadow-sm"
+                            : "text-neutral-500 hover:text-neutral-800 hover:bg-[#D5FF00]/30"
+                      }`}
+                    >
+                      DE
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sections */}
+            <div className="space-y-3">
+              {filteredSections.map((s) => {
+                const stAll = sectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+                const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
+                const st = isFiltered ? stShown : stAll;
+                const collapsed = isSectionCollapsed(s.id);
+
+                return (
+                  <div key={s.id} className={`${card}`}>
+                    <div className={`${cardHead} flex items-center justify-between gap-3`}>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleSectionCollapsed(s.id)}
+                            title={collapsed ? t.expand : t.collapse}
+                            className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center"
+                            aria-label={collapsed ? t.expand : t.collapse}
+                          >
+                            {collapsed ? "▸" : "▾"}
+                          </button>
+                          <input
+                            className="flex-1 w-full font-semibold text-neutral-800 bg-transparent outline-none"
+                            value={s.name}
+                            onChange={(e) => renameSection(s.id, e.target.value)}
+                          />
+                        </div>
+                        <div className="text-xs text-neutral-600 mt-1">
+                          {st.done}/{st.total} {t.done} • {st.left} {t.left}
+                          {st.overdue ? ` • ${st.overdue} ${t.overdueLabel}` : ""}
+                          {isFiltered ? <span className="ml-2">• {t.filteredShowing} {stShown.total}/{stAll.total}</span> : null}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <SmallButton onClick={() => addItem(s.id)}>{t.addItem}</SmallButton>
+                        <SmallButton
+                          tone="danger"
+                          onClick={() => requestDeleteSection(s.id)}
+                          disabled={sections.length === 1}
+                          title={sections.length === 1 ? t.keepOne : t.del}
+                        >
+                          {t.del}
+                        </SmallButton>
+                      </div>
+                    </div>
+
+                    <div className={`${cardPad}`}>
+                      {collapsed ? (
+                        <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 flex items-center justify-between gap-3">
+                          <div className="text-sm text-neutral-700">
+                            <span className="font-medium text-neutral-800">{t.sectionCollapsed}.</span> {st.total} {lang === "de" ? "Eintrag/Einträge" : "item(s)"}
+                            {st.overdue ? ` • ${st.overdue} ${t.overdueLabel}` : ""}.
+                          </div>
+                          <SmallButton tone="primary" onClick={() => toggleSectionCollapsed(s.id)}>
+                            {t.expand}
+                          </SmallButton>
+                        </div>
+                      ) : (s.items || []).length ? (
+                        <ul className="space-y-3">
+                          {s.items.map((it, idx) => {
+                            const overdue = !it.done && it.dueDate && it.dueDate < todayISO();
+                            return (
+                              <li
+                                key={it.id}
+                                className={`flex items-start gap-3 rounded-2xl p-2 border ${
+                                  overdue ? "border-red-200 bg-red-50" : "border-neutral-200 bg-white"
+                                }`}
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={onDropItem(s.id, idx)}
+                              >
+                                <button
+                                  type="button"
+                                  draggable
+                                  onDragStart={onDragStartItem(s.id, idx)}
+                                  className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                                  title={lang === "de" ? "Ziehen zum Sortieren" : "Drag to reorder"}
+                                >
+                                  ≡
+                                </button>
+
+                                <div className="mt-2">
+                                  <Checkbox checked={!!it.done} onChange={(v) => updateItem(s.id, it.id, { done: v })} />
+                                </div>
+
+                                <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-2">
+                                  <div className="md:col-span-2">
+                                    <input
+                                      className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300 ${
+                                        it.done
+                                          ? "border-neutral-200 bg-neutral-50 text-neutral-600 line-through"
+                                          : "border-neutral-200 bg-white text-neutral-800"
+                                      }`}
+                                      value={it.text}
+                                      onChange={(e) => updateItem(s.id, it.id, { text: e.target.value })}
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <DateField lang={lang} value={it.dueDate || ""} onChange={(v) => updateItem(s.id, it.id, { dueDate: v })} />
+                                    {overdue ? <div className="text-xs text-red-700 mt-1">{t.overdue}</div> : null}
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  className="print:hidden px-2 py-2 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-700"
+                                  onClick={() => deleteItem(s.id, it.id)}
+                                  title={lang === "de" ? "Eintrag löschen" : "Delete item"}
+                                >
+                                  ✕
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <div className="text-sm text-neutral-600">{t.noItemsYet}</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
