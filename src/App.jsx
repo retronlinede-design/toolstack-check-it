@@ -490,7 +490,7 @@ function HelpModal({ open, onClose, t }) {
         <div className="relative bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
           {/* Header */}
           <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
-            <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter text-neutral-900">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black italic tracking-tighter text-neutral-900">
               {t.help}
             </h2>
             <button
@@ -503,25 +503,85 @@ function HelpModal({ open, onClose, t }) {
           </div>
 
           {/* Content */}
-          <div className="p-8 space-y-6">
-            <p className="text-lg text-neutral-700 font-medium leading-relaxed">
-              <strong className="text-lime-600 font-black tracking-tight text-xl">Check-It</strong> is your daily grind manager. Keep it simple, keep it moving.
-            </p>
-            
-            <ul className="space-y-4">
-              {[
-                "Add sections & items to organize the chaos.",
-                "Drag the handle (≡) to switch up priorities.",
-                "Set due dates. Don't let tasks rot.",
-                "Hit Preview to print or save a PDF.",
-                "Export data to keep it safe or share it."
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-neutral-600 font-medium">
-                  <div className="mt-1.5 h-2.5 w-2.5 bg-[#D5FF00] border border-neutral-900 shrink-0 rounded-full" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="p-8 space-y-6 overflow-y-auto max-h-[60vh]">
+            <section>
+              <h3 className="font-bold text-neutral-900">1) About Check-It</h3>
+              <p className="text-neutral-700 mt-1">
+                Check-It is a local-first checklist tool designed to help you organise tasks into sections, track progress, and print clean checklists. It’s built for fast daily use with no accounts, no cloud storage, and no automatic data sharing.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">2) How Check-It Works</h3>
+              <p className="text-neutral-700 mt-1">Check-It follows a simple workflow:</p>
+              <ol className="list-decimal list-inside text-neutral-700 mt-2 space-y-1 ml-1">
+                <li><strong>Create Sections</strong><br /><span className="ml-4">Add sections for categories (e.g., Home, Work, Vehicle, Admin).</span></li>
+                <li><strong>Add Checklist Items</strong><br /><span className="ml-4">Add items under each section. Use due dates if needed.</span></li>
+                <li><strong>Reorder and Maintain</strong><br /><span className="ml-4">Reorder items to match your workflow and update items as you complete them.</span></li>
+                <li><strong>Preview & Print</strong><br /><span className="ml-4">Use Preview to generate a print-ready checklist sheet.</span></li>
+                <li><strong>Export a Backup</strong><br /><span className="ml-4">Export a JSON backup regularly, especially after major updates.</span></li>
+              </ol>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">3) Your Data & Privacy</h3>
+              <p className="text-neutral-700 mt-1">Your data is saved locally in this browser using secure local storage.</p>
+              <p className="text-neutral-700 mt-1">This means:</p>
+              <ul className="list-disc list-inside text-neutral-700 mt-1 ml-1">
+                <li>Your data stays on this device</li>
+                <li>Clearing browser data can remove your lists</li>
+                <li>Incognito/private mode will not retain data</li>
+                <li>Data does not automatically sync across devices</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">4) Backup & Restore</h3>
+              <p className="text-neutral-700 mt-1">
+                Export downloads a JSON backup of your current Check-It data.<br />
+                Import restores a previously exported JSON file and replaces current app data.
+              </p>
+              <p className="text-neutral-700 mt-2">Recommended routine:</p>
+              <ul className="list-disc list-inside text-neutral-700 mt-1 ml-1">
+                <li>Export weekly</li>
+                <li>Export after major edits</li>
+                <li>Store backups in two locations (e.g., Downloads + Drive/USB)</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">5) Buttons Explained</h3>
+              <ul className="text-neutral-700 mt-1 space-y-1">
+                <li><strong>Preview</strong> – Opens the print-ready view.</li>
+                <li><strong>Print / Save PDF</strong> – Prints only the preview sheet. Choose “Save as PDF” to create a file.</li>
+                <li><strong>Export</strong> – Downloads a JSON backup file.</li>
+                <li><strong>Import</strong> – Restores data from a JSON backup file.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">6) Storage Keys (Advanced)</h3>
+              <ul className="text-neutral-700 mt-1 space-y-1 font-mono text-sm">
+                <li>App data key: toolstack.checkit.v1</li>
+                <li>Shared profile key: toolstack.profile.v1</li>
+                <li>Current App Key: {LS_KEY}</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">7) Notes / Limitations</h3>
+              <p className="text-neutral-700 mt-1">
+                Check-It is a productivity tool. Data accuracy depends on what you enter.<br />
+                Use Export regularly to avoid data loss.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="font-bold text-neutral-900">8) Support / Feedback</h3>
+              <p className="text-neutral-700 mt-1">
+                If something breaks, include: device + browser + steps to reproduce + what you expected vs what happened.
+              </p>
+            </section>
 
             <div className="pt-6 border-t border-neutral-100 text-center">
               <div className="inline-block px-4 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-bold text-neutral-500 tracking-widest uppercase">
