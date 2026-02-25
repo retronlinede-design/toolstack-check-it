@@ -52,15 +52,15 @@ const sanitizeCollapsedById = (m) => {
 };
 
 const btnSecondary =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200 shadow-sm";
+  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:bg-[#8FBC8F]/30 hover:border-[#8FBC8F]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200 shadow-sm";
 const btnPrimary =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-[#D5FF00]/30 border-[#D5FF00]/30 text-neutral-800 shadow-sm hover:bg-white hover:border-neutral-200";
+  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-[#8FBC8F]/30 border-[#8FBC8F]/30 text-neutral-800 shadow-sm hover:bg-white hover:border-neutral-200";
 const btnDanger =
-  "print:hidden px-3 py-2 rounded-xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 hover:bg-red-100 text-red-700 border-red-200 shadow-sm";
+  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 hover:bg-red-100 text-red-700 border-red-200 shadow-sm";
 const inputBase =
   "mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300";
-const card = "rounded-2xl bg-white border border-neutral-200 shadow-sm";
-const cardHead = "px-4 py-3 border-b border-neutral-100";
+const card = "rounded-2xl bg-white border-2 border-[#D5FF00] shadow-sm";
+const cardHead = "px-4 py-3 border-b border-green-100";
 const cardPad = "p-4";
 
 function SmallButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
@@ -73,7 +73,7 @@ function SmallButton({ children, onClick, tone = "default", disabled, title, cla
 }
 
 /** Normalized Top Actions (mobile-aligned “table/grid”) */
-const ACTION_BASE =
+const ACTION_BASE = 
   "print:hidden h-9 px-6 rounded-xl text-xs font-medium border transition shadow-sm active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center";
 
 function ActionButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
@@ -372,10 +372,10 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
       {open ? (
         <div
           ref={panelRef}
-          role="dialog"
+          role="dialog" 
           aria-label={lang === "de" ? "Fälligkeitsdatum wählen" : "Choose due date"}
           style={{ top: pos.top, left: pos.left, width: pos.width }}
-          className="print:hidden fixed z-50 rounded-2xl border border-neutral-200 bg-white shadow-xl overflow-hidden max-h-[80vh]"
+          className="print:hidden fixed z-50 rounded-2xl border-2 border-neutral-900 bg-white shadow-[4px_4px_0px_#D5FF00] overflow-hidden max-h-[80vh]"
         >
           <div className="px-3 py-2 border-b border-neutral-100 flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">
@@ -393,7 +393,7 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
                 className="h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center"
                 aria-label={lang === "de" ? "Nächster Monat" : "Next month"}
               >
-                ›
+                →
               </button>
             </div>
 
@@ -407,7 +407,7 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
               className="h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 flex items-center justify-center"
               aria-label={lang === "de" ? "Schließen" : "Close"}
             >
-              ✕
+              X
             </button>
           </div>
 
@@ -484,24 +484,18 @@ function HelpModal({ open, onClose, t }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-      <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
       
       <div className="relative w-full max-w-lg transform transition-all">
-        {/* Decorative background offset */}
-        <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20" />
-        
-        <div className="relative bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+        <div className="relative bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
           {/* Header */}
-          <div className="relative p-6 pb-2 flex items-start justify-between">
-            <div className="transform -rotate-2">
-              <h2 className="text-5xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
-                {t.help}
-              </h2>
-              <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
-            </div>
+          <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
+            <h2 className="text-3xl sm:text-4xl font-black italic tracking-tighter text-neutral-900">
+              {t.help}
+            </h2>
             <button
               type="button"
-              className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+              className="h-10 w-10 rounded-xl bg-neutral-100 hover:bg-[#D5FF00] border-2 border-transparent hover:border-neutral-900 text-neutral-900 font-bold flex items-center justify-center transition-all"
               onClick={onClose}
             >
               ✕
@@ -510,8 +504,8 @@ function HelpModal({ open, onClose, t }) {
 
           {/* Content */}
           <div className="p-8 space-y-6">
-            <p className="text-lg text-neutral-300 font-medium leading-relaxed">
-              <strong className="text-[#D5FF00] font-black tracking-tight text-xl">Check-It</strong> is your daily grind manager. Keep it simple, keep it moving.
+            <p className="text-lg text-neutral-700 font-medium leading-relaxed">
+              <strong className="text-lime-600 font-black tracking-tight text-xl">Check-It</strong> is your daily grind manager. Keep it simple, keep it moving.
             </p>
             
             <ul className="space-y-4">
@@ -522,15 +516,15 @@ function HelpModal({ open, onClose, t }) {
                 "Hit Preview to print or save a PDF.",
                 "Export data to keep it safe or share it."
               ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-neutral-400 font-medium">
-                  <div className="mt-1.5 h-2.5 w-2.5 bg-[#D5FF00] shrink-0 rotate-45 shadow-[0_0_10px_#D5FF00]" />
+                <li key={i} className="flex items-start gap-3 text-neutral-600 font-medium">
+                  <div className="mt-1.5 h-2.5 w-2.5 bg-[#D5FF00] border border-neutral-900 shrink-0 rounded-full" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="pt-6 border-t border-neutral-800 text-center">
-              <div className="inline-block px-4 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-500 tracking-widest uppercase">
+            <div className="pt-6 border-t border-neutral-100 text-center">
+              <div className="inline-block px-4 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-bold text-neutral-500 tracking-widest uppercase">
                 ToolStack • Check-It
               </div>
             </div>
@@ -546,24 +540,18 @@ function ExportModal({ open, onClose, t, actions }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-      <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
       
       <div className="relative w-full max-w-sm transform transition-all">
-        {/* Decorative background offset */}
-        <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20" />
-        
-        <div className="relative bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+        <div className="relative bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
           {/* Header */}
-          <div className="relative p-6 pb-2 flex items-start justify-between">
-            <div className="transform -rotate-2">
-              <h2 className="text-4xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
-                {t.exportImport}
-              </h2>
-              <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
-            </div>
+          <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
+            <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter text-neutral-900">
+              {t.exportImport}
+            </h2>
             <button
               type="button"
-              className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+              className="h-10 w-10 rounded-xl bg-neutral-100 hover:bg-[#D5FF00] border-2 border-transparent hover:border-neutral-900 text-neutral-900 font-bold flex items-center justify-center transition-all"
               onClick={onClose}
             >
               ✕
@@ -572,26 +560,26 @@ function ExportModal({ open, onClose, t, actions }) {
 
           {/* Content */}
           <div className="p-8 space-y-4">
-            <p className="text-neutral-400 text-sm font-medium mb-2">
+            <p className="text-neutral-600 text-sm font-medium mb-2">
               Manage your data. Keep it safe.
             </p>
 
-            <ActionButton onClick={() => { actions.email(); onClose(); }} disabled={actions.disabled} className="!bg-white !border-white !text-neutral-900 hover:!bg-neutral-200">
+            <ActionButton onClick={() => { actions.email(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100">
               {t.email}
             </ActionButton>
             
-            <div className="h-px bg-neutral-800 my-2" />
+            <div className="h-px bg-neutral-200 my-2" />
             
-            <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-white !border-white !text-neutral-900 hover:!bg-neutral-200">
+            <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100">
               {t.export}
             </ActionButton>
             
-            <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-white">
+            <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-neutral-900">
               {t.import}
             </ActionFileButton>
 
-            <div className="pt-4 border-t border-neutral-800 text-center mt-4">
-              <div className="inline-block px-4 py-1 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-500 tracking-widest uppercase">
+            <div className="pt-4 border-t border-neutral-100 text-center mt-4">
+              <div className="inline-block px-4 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-bold text-neutral-500 tracking-widest uppercase">
                 JSON Data
               </div>
             </div>
@@ -606,24 +594,23 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-      <div className="absolute inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative w-full max-w-md rounded-2xl bg-white border border-neutral-200 shadow-xl overflow-hidden">
-        <div className="p-4 border-b border-neutral-100">
-          <div className="text-lg font-semibold text-neutral-800">{title}</div>
-          <div className="text-sm text-neutral-700 mt-1">{message}</div>
-          <div className="mt-3 h-[2px] w-40 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
+      <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm" onClick={onCancel} />
+      <div className="relative w-full max-w-md rounded-[2rem] bg-white border-2 border-neutral-900 shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
+        <div className="p-6 border-b-2 border-neutral-100">
+          <h3 className="text-xl font-black text-neutral-900">{title}</h3>
+          <p className="text-neutral-600 mt-2 font-medium">{message}</p>
         </div>
-        <div className="p-4 flex items-center justify-end gap-2">
+        <div className="p-6 flex items-center justify-end gap-3 bg-neutral-50">
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 transition"
+            className="px-4 py-2 rounded-xl text-sm font-bold border-2 border-neutral-200 bg-white hover:border-neutral-900 text-neutral-700 transition"
             onClick={onCancel}
           >
             Cancel
           </button>
           <button
             type="button"
-            className="px-3 py-2 rounded-xl text-sm font-medium border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 transition"
+            className="px-4 py-2 rounded-xl text-sm font-bold border-2 border-red-100 bg-red-50 hover:bg-red-100 hover:border-red-200 text-red-700 transition"
             onClick={onConfirm}
           >
             {confirmText}
@@ -1081,33 +1068,29 @@ export default function App() {
       {/* Preview Modal */}
       {previewOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
-          <div className="absolute inset-0 bg-neutral-900/90 backdrop-blur-sm transition-opacity" onClick={() => setPreviewOpen(false)} />
+          <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={() => setPreviewOpen(false)} />
           
           <div className="relative w-full max-w-5xl h-[85vh] flex flex-col transform transition-all">
-            {/* Decorative background offset */}
-            <div className="absolute top-2 left-2 w-full h-full bg-[#D5FF00] rounded-[2rem] -rotate-1 opacity-20 pointer-events-none" />
-            
-            <div className="relative flex flex-col h-full bg-neutral-900 border-2 border-[#D5FF00] rounded-[2rem] shadow-[0_0_40px_rgba(213,255,0,0.2)] overflow-hidden">
+            <div className="relative flex flex-col h-full bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[12px_12px_0px_#D5FF00] overflow-hidden">
               
               {/* Header */}
-              <div className="relative p-6 pb-4 flex items-center justify-between shrink-0 border-b-2 border-neutral-800 bg-neutral-900 z-10">
-                <div className="transform -rotate-1">
-                  <h2 className="text-4xl font-black italic tracking-tighter text-white drop-shadow-[3px_3px_0px_rgba(213,255,0,0.4)]">
+              <div className="relative p-6 pb-4 flex items-center justify-between shrink-0 border-b-2 border-neutral-100 bg-white z-10">
+                <div>
+                  <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter text-neutral-900">
                     {t.printPreview}
                   </h2>
-                  <div className="h-2 w-full bg-[#D5FF00] mt-1 rounded-full skew-x-12" />
                 </div>
                 
                 <div className="flex items-center gap-4">
                   <button 
-                    className="px-6 py-3 rounded-xl text-sm font-bold border-2 border-[#D5FF00] bg-[#D5FF00] text-neutral-900 hover:bg-white hover:border-white transition shadow-[4px_4px_0px_rgba(0,0,0,0.2)] uppercase tracking-wider"
+                    className="px-6 py-3 rounded-xl text-sm font-bold border-2 border-[#D5FF00] bg-[#D5FF00] text-neutral-900 hover:bg-white hover:border-neutral-900 transition shadow-[4px_4px_0px_rgba(0,0,0,0.1)] uppercase tracking-wider"
                     onClick={() => window.print()}
                   >
                     {t.printSave}
                   </button>
                   <button
                     type="button"
-                    className="h-12 w-12 rounded-xl bg-[#D5FF00] hover:bg-white text-neutral-800 font-black text-2xl flex items-center justify-center transition-transform hover:scale-110 hover:rotate-6 shadow-[4px_4px_0px_rgba(255,255,255,0.2)]"
+                    className="h-12 w-12 rounded-xl bg-neutral-100 hover:bg-[#D5FF00] border-2 border-transparent hover:border-neutral-900 text-neutral-900 font-black text-2xl flex items-center justify-center transition-all"
                     onClick={() => setPreviewOpen(false)}
                   >
                     ✕
@@ -1116,8 +1099,8 @@ export default function App() {
               </div>
 
               {/* Content Area - Scrollable */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-800/50">
-                <div className="mx-auto max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-50">
+                <div className="mx-auto max-w-3xl bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
                   <div id="checkit-print" className="p-8 sm:p-12 min-h-[50vh]">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -1184,10 +1167,10 @@ export default function App() {
           {/* Left Column: Logo, Status, Controls */}
           <div className="flex flex-col gap-6">
             <div className="relative flex flex-col gap-3 w-full">
-              <img src={checkitLogo} alt="CheckIt" className="h-20 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
+              <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
             </div>
 
-            <div className="w-full max-w-lg bg-white rounded-2xl border border-neutral-200 shadow-sm p-5">
+            <div className="w-full max-w-lg bg-white rounded-2xl border-2 border-[#D5FF00] shadow-sm p-5">
                 <div className="flex items-end justify-between mb-4">
                   <div>
                     <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-1">
@@ -1224,7 +1207,7 @@ export default function App() {
                 </div>
 
                 <div className="relative h-4 w-full bg-neutral-100 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="absolute top-0 left-0 h-full bg-[#D5FF00] transition-all duration-500 ease-out"
                     style={{ width: `${totals.total > 0 ? (totals.done / totals.total) * 100 : 0}%` }}
                   />
@@ -1261,17 +1244,17 @@ export default function App() {
 
             {/* Controls */}
             <div className={`${card}`}>
-              <div className={`${cardHead}`}>
+              <div className={`${cardHead} `}>
                 <div className="font-semibold text-neutral-800">{t.controls}</div>
               </div>
               <div className={`${cardPad} space-y-3`}>
                 <div>
                   <label className="text-sm text-neutral-700 font-medium">{t.checklistTitle}</label>
-                  <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)} />
+                  <input className={inputBase} value={title} onChange={(e) => setTitle(e.target.value)}  />
                 </div>
 
                 {/* Search + Filter */}
-                <div>
+                <div> 
                   <label className="text-sm text-neutral-700 font-medium">{t.search}</label>
                   <input className={inputBase} value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.searchPh} />
 
@@ -1279,7 +1262,7 @@ export default function App() {
                     <button
                       type="button"
                       className={`print:hidden px-3 py-2 rounded-xl text-sm font-medium border shadow-sm transition ${
-                        filter === "all"
+                        filter === "all" 
                           ? "border-neutral-700 bg-neutral-700 text-white hover:bg-neutral-600"
                           : "border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800"
                       }`}
@@ -1357,7 +1340,7 @@ export default function App() {
           {/* Right Column: Actions, Sections */}
           <div className="lg:col-span-2 flex flex-col gap-6">
             {/* Actions */}
-            <div className="flex flex-col items-end lg:h-28 lg:justify-center">
+            <div className="flex flex-col items-end lg:h-28 lg:justify-center ">
               <div className="relative flex justify-end gap-2 w-full">
                 <div className="flex items-center gap-2">
                   <ActionButton onClick={() => {}}>HUB</ActionButton>
@@ -1374,29 +1357,29 @@ export default function App() {
                   ?
                 </button>
 
-                <div className="print:hidden absolute right-0 top-12">
-                    <div className="flex items-center gap-1 p-1 bg-white border border-neutral-200 rounded-xl w-fit shadow-sm">
+                <div className="print:hidden absolute right-0 top-14 flex gap-3">
                     <button
                       onClick={() => setLang("en")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                      className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
                         lang === "en"
-                            ? "bg-[#D5FF00] text-neutral-800 shadow-sm"
-                            : "text-neutral-500 hover:text-neutral-800 hover:bg-[#D5FF00]/30"
+                            ? "bg-[#D5FF00] text-black -rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
+                            : "bg-white text-neutral-400 rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
                       }`}
+                      style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
                     >
                       EN
                     </button>
                     <button
                       onClick={() => setLang("de")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                      className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
                         lang === "de"
-                            ? "bg-[#D5FF00] text-neutral-800 shadow-sm"
-                            : "text-neutral-500 hover:text-neutral-800 hover:bg-[#D5FF00]/30"
+                            ? "bg-[#D5FF00] text-black rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
+                            : "bg-white text-neutral-400 -rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
                       }`}
+                      style={{ borderRadius: "15px 225px 15px 255px / 255px 15px 225px 15px" }}
                     >
                       DE
                     </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1408,7 +1391,7 @@ export default function App() {
                 const stShown = filteredSectionTotals.find((x) => x.id === s.id) || { total: 0, done: 0, left: 0, overdue: 0 };
                 const st = isFiltered ? stShown : stAll;
                 const collapsed = isSectionCollapsed(s.id);
-
+          
                 return (
                   <div key={s.id} className={`${card}`}>
                     <div className={`${cardHead} flex items-center justify-between gap-3`}>
@@ -1448,7 +1431,7 @@ export default function App() {
                         </SmallButton>
                       </div>
                     </div>
-
+        
                     <div className={`${cardPad}`}>
                       {collapsed ? (
                         <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 flex items-center justify-between gap-3">
@@ -1463,7 +1446,7 @@ export default function App() {
                       ) : (s.items || []).length ? (
                         <ul className="space-y-3">
                           {s.items.map((it, idx) => {
-                            const overdue = !it.done && it.dueDate && it.dueDate < todayISO();
+                            const overdue = !it.done && it.dueDate && it.dueDate < todayISO(); 
                             return (
                               <li
                                 key={it.id}
