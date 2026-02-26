@@ -598,6 +598,12 @@ function HelpModal({ open, onClose, t }) {
 function ExportModal({ open, onClose, t, actions }) {
   if (!open) return null;
 
+  const handleEmailDraft = () => {
+    const subject = `Check-It Export Pack – ${new Date().toISOString().slice(0, 10)}`;
+    const body = "Attach: PDF export from Check-It (please attach the downloaded PDF file).\n\nExports are generated on your device. No data is uploaded automatically.";
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
       <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
@@ -607,7 +613,7 @@ function ExportModal({ open, onClose, t, actions }) {
           {/* Header */}
           <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
             <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter text-neutral-900">
-              {t.exportImport}
+              Export Pack
             </h2>
             <button
               type="button"
@@ -621,22 +627,35 @@ function ExportModal({ open, onClose, t, actions }) {
           {/* Content */}
           <div className="p-8 space-y-4">
             <p className="text-neutral-600 text-sm font-medium mb-2">
-              Manage your data. Keep it safe.
+              Save, share, or back up your data.
             </p>
 
-            <ActionButton onClick={() => { actions.email(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100">
-              {t.email}
-            </ActionButton>
+            <div className="space-y-2">
+              <ActionButton onClick={() => { actions.preview(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
+                Download PDF
+              </ActionButton>
+              <ActionButton onClick={() => { actions.preview(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
+                Print / Save PDF
+              </ActionButton>
+              <ActionButton onClick={() => { handleEmailDraft(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
+                Create Email Draft
+              </ActionButton>
+            </div>
             
             <div className="h-px bg-neutral-200 my-2" />
             
-            <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100">
-              {t.export}
-            </ActionButton>
-            
-            <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-neutral-900">
-              {t.import}
-            </ActionFileButton>
+            <div className="space-y-2">
+              <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
+                Download JSON
+              </ActionButton>
+              
+              <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-neutral-900 w-full">
+                Import JSON
+              </ActionFileButton>
+              <p className="text-xs text-neutral-500 text-center mt-1">
+                Import replaces current app data. Export first if unsure.
+              </p>
+            </div>
 
             <div className="pt-4 border-t border-neutral-100 text-center mt-4">
               <div className="inline-block px-4 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-bold text-neutral-500 tracking-widest uppercase">
@@ -1112,6 +1131,7 @@ export default function App() {
           email: emailCurrentView,
           export: exportJSON,
           import: importJSON,
+          preview: () => setPreviewOpen(true),
           disabled: totals.total === 0
         }}
       />
