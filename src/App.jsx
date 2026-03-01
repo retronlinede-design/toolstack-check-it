@@ -52,9 +52,9 @@ const sanitizeCollapsedById = (m) => {
 };
 
 const btnSecondary =
-  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:bg-[#8FBC8F]/30 hover:border-[#8FBC8F]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200 shadow-sm";
+  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 text-neutral-700 border-neutral-200 shadow-sm";
 const btnPrimary =
-  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-[#8FBC8F]/30 border-[#8FBC8F]/30 text-neutral-800 shadow-sm hover:bg-white hover:border-neutral-200";
+  "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-[#D5FF00]/30 border-[#D5FF00]/30 text-neutral-800 shadow-sm hover:bg-white hover:border-neutral-200";
 const btnDanger =
   "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 hover:bg-red-100 text-red-700 border-red-200 shadow-sm";
 const inputBase =
@@ -480,8 +480,111 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
   );
 }
 
-function HelpModal({ open, onClose, t }) {
+const HELP_TEXT = {
+  en: {
+    aboutTitle: "1) About Check-It",
+    aboutText: "Check-It is a local-first checklist tool designed to help you organise tasks into sections, track progress, and print clean checklists. It’s built for fast daily use with no accounts, no cloud storage, and no automatic data sharing.",
+    howTitle: "2) How Check-It Works",
+    howIntro: "Check-It follows a simple workflow:",
+    howSteps: [
+      { b: "Create Sections", t: "Add sections for categories (e.g., Home, Work, Vehicle, Admin)." },
+      { b: "Add Checklist Items", t: "Add items under each section. Use due dates if needed." },
+      { b: "Reorder and Maintain", t: "Reorder items to match your workflow and update items as you complete them." },
+      { b: "Preview & Print", t: "Use Preview to generate a print-ready checklist sheet." },
+      { b: "Export a Backup", t: "Export a JSON backup regularly, especially after major updates." },
+    ],
+    privacyTitle: "3) Your Data & Privacy",
+    privacyText: "Your data is saved locally in this browser using secure local storage.",
+    privacyMeaning: "This means:",
+    privacyList: [
+      "Your data stays on this device",
+      "Clearing browser data can remove your lists",
+      "Incognito/private mode will not retain data",
+      "Data does not automatically sync across devices"
+    ],
+    backupTitle: "4) Backup & Restore",
+    backupText1: "Export downloads a JSON backup of your current Check-It data.",
+    backupText2: "Import restores a previously exported JSON file and replaces current app data.",
+    backupRec: "Recommended routine:",
+    backupList: [
+      "Export weekly",
+      "Export after major edits",
+      "Store backups in two locations (e.g., Downloads + Drive/USB)"
+    ],
+    buttonsTitle: "5) Buttons Explained",
+    buttonsList: [
+      { b: "Preview", t: "Opens the print-ready view." },
+      { b: "Print / Save PDF", t: "Prints only the preview sheet. Choose “Save as PDF” to create a file." },
+      { b: "Export", t: "Downloads a JSON backup file." },
+      { b: "Import", t: "Restores data from a JSON backup file." }
+    ],
+    storageTitle: "6) Storage Keys (Advanced)",
+    storageKeys: [
+      "App data key: toolstack.checkit.v1",
+      "Shared profile key: toolstack.profile.v1",
+    ],
+    storageCurrent: "Current App Key",
+    notesTitle: "7) Notes / Limitations",
+    notesText1: "Check-It is a productivity tool. Data accuracy depends on what you enter.",
+    notesText2: "Use Export regularly to avoid data loss.",
+    supportTitle: "8) Support / Feedback",
+    supportText: "If something breaks, include: device + browser + steps to reproduce + what you expected vs what happened."
+  },
+  de: {
+    aboutTitle: "1) Über Check-It",
+    aboutText: "Check-It ist ein lokales Checklisten-Tool, mit dem du Aufgaben in Abschnitte organisieren, Fortschritte verfolgen und saubere Checklisten drucken kannst. Es ist für den schnellen täglichen Gebrauch konzipiert – ohne Konten, ohne Cloud-Speicher und ohne automatische Datenweitergabe.",
+    howTitle: "2) Wie Check-It funktioniert",
+    howIntro: "Check-It folgt einem einfachen Arbeitsablauf:",
+    howSteps: [
+      { b: "Abschnitte erstellen", t: "Füge Abschnitte für Kategorien hinzu (z. B. Zuhause, Arbeit, Fahrzeug, Admin)." },
+      { b: "Einträge hinzufügen", t: "Füge Einträge unter jedem Abschnitt hinzu. Nutze Fälligkeitsdaten bei Bedarf." },
+      { b: "Sortieren und Pflegen", t: "Sortiere Einträge passend zu deinem Ablauf und aktualisiere sie, wenn sie erledigt sind." },
+      { b: "Vorschau & Drucken", t: "Nutze die Vorschau, um eine druckfertige Checkliste zu erstellen." },
+      { b: "Backup exportieren", t: "Exportiere regelmäßig ein JSON-Backup, besonders nach größeren Änderungen." },
+    ],
+    privacyTitle: "3) Deine Daten & Privatsphäre",
+    privacyText: "Deine Daten werden lokal in diesem Browser im sicheren lokalen Speicher gespeichert.",
+    privacyMeaning: "Das bedeutet:",
+    privacyList: [
+      "Deine Daten bleiben auf diesem Gerät",
+      "Das Löschen von Browserdaten kann deine Listen entfernen",
+      "Inkognito/Privat-Modus speichert keine Daten dauerhaft",
+      "Daten werden nicht automatisch über Geräte hinweg synchronisiert"
+    ],
+    backupTitle: "4) Backup & Wiederherstellung",
+    backupText1: "Export lädt ein JSON-Backup deiner aktuellen Check-It-Daten herunter.",
+    backupText2: "Import stellt eine zuvor exportierte JSON-Datei wieder her und ersetzt die aktuellen App-Daten.",
+    backupRec: "Empfohlene Routine:",
+    backupList: [
+      "Wöchentlich exportieren",
+      "Nach größeren Bearbeitungen exportieren",
+      "Backups an zwei Orten speichern (z. B. Downloads + Drive/USB)"
+    ],
+    buttonsTitle: "5) Erklärte Schaltflächen",
+    buttonsList: [
+      { b: "Vorschau", t: "Öffnet die druckfertige Ansicht." },
+      { b: "Drucken / PDF speichern", t: "Druckt nur das Vorschaublatt. Wähle „Als PDF speichern“, um eine Datei zu erstellen." },
+      { b: "Export", t: "Lädt eine JSON-Backup-Datei herunter." },
+      { b: "Import", t: "Stellt Daten aus einer JSON-Backup-Datei wieder her." }
+    ],
+    storageTitle: "6) Speicherschlüssel (Erweitert)",
+    storageKeys: [
+      "App-Daten-Schlüssel: toolstack.checkit.v1",
+      "Geteilter Profil-Schlüssel: toolstack.profile.v1",
+    ],
+    storageCurrent: "Aktueller App-Schlüssel",
+    notesTitle: "7) Hinweise / Einschränkungen",
+    notesText1: "Check-It ist ein Produktivitäts-Tool. Die Datengenauigkeit hängt von deinen Eingaben ab.",
+    notesText2: "Nutze Export regelmäßig, um Datenverlust zu vermeiden.",
+    supportTitle: "8) Support / Feedback",
+    supportText: "Wenn etwas nicht funktioniert, gib bitte an: Gerät + Browser + Schritte zum Reproduzieren + was du erwartet hast vs. was passiert ist."
+  }
+};
+
+function HelpModal({ open, onClose, t, lang = "en" }) {
   if (!open) return null;
+  const ht = HELP_TEXT[lang] || HELP_TEXT.en;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
       <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
@@ -505,82 +608,69 @@ function HelpModal({ open, onClose, t }) {
           {/* Content */}
           <div className="p-8 space-y-6 overflow-y-auto max-h-[60vh]">
             <section>
-              <h3 className="font-bold text-neutral-900">1) About Check-It</h3>
-              <p className="text-neutral-700 mt-1">
-                Check-It is a local-first checklist tool designed to help you organise tasks into sections, track progress, and print clean checklists. It’s built for fast daily use with no accounts, no cloud storage, and no automatic data sharing.
-              </p>
+              <h3 className="font-bold text-neutral-900">{ht.aboutTitle}</h3>
+              <p className="text-neutral-700 mt-1">{ht.aboutText}</p>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">2) How Check-It Works</h3>
-              <p className="text-neutral-700 mt-1">Check-It follows a simple workflow:</p>
+              <h3 className="font-bold text-neutral-900">{ht.howTitle}</h3>
+              <p className="text-neutral-700 mt-1">{ht.howIntro}</p>
               <ol className="list-decimal list-inside text-neutral-700 mt-2 space-y-1 ml-1">
-                <li><strong>Create Sections</strong><br /><span className="ml-4">Add sections for categories (e.g., Home, Work, Vehicle, Admin).</span></li>
-                <li><strong>Add Checklist Items</strong><br /><span className="ml-4">Add items under each section. Use due dates if needed.</span></li>
-                <li><strong>Reorder and Maintain</strong><br /><span className="ml-4">Reorder items to match your workflow and update items as you complete them.</span></li>
-                <li><strong>Preview & Print</strong><br /><span className="ml-4">Use Preview to generate a print-ready checklist sheet.</span></li>
-                <li><strong>Export a Backup</strong><br /><span className="ml-4">Export a JSON backup regularly, especially after major updates.</span></li>
+                {ht.howSteps.map((step, i) => (
+                  <li key={i}><strong>{step.b}</strong><br /><span className="ml-4">{step.t}</span></li>
+                ))}
               </ol>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">3) Your Data & Privacy</h3>
-              <p className="text-neutral-700 mt-1">Your data is saved locally in this browser using secure local storage.</p>
-              <p className="text-neutral-700 mt-1">This means:</p>
+              <h3 className="font-bold text-neutral-900">{ht.privacyTitle}</h3>
+              <p className="text-neutral-700 mt-1">{ht.privacyText}</p>
+              <p className="text-neutral-700 mt-1">{ht.privacyMeaning}</p>
               <ul className="list-disc list-inside text-neutral-700 mt-1 ml-1">
-                <li>Your data stays on this device</li>
-                <li>Clearing browser data can remove your lists</li>
-                <li>Incognito/private mode will not retain data</li>
-                <li>Data does not automatically sync across devices</li>
+                {ht.privacyList.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">4) Backup & Restore</h3>
+              <h3 className="font-bold text-neutral-900">{ht.backupTitle}</h3>
               <p className="text-neutral-700 mt-1">
-                Export downloads a JSON backup of your current Check-It data.<br />
-                Import restores a previously exported JSON file and replaces current app data.
+                {ht.backupText1}<br />
+                {ht.backupText2}
               </p>
-              <p className="text-neutral-700 mt-2">Recommended routine:</p>
+              <p className="text-neutral-700 mt-2">{ht.backupRec}</p>
               <ul className="list-disc list-inside text-neutral-700 mt-1 ml-1">
-                <li>Export weekly</li>
-                <li>Export after major edits</li>
-                <li>Store backups in two locations (e.g., Downloads + Drive/USB)</li>
+                {ht.backupList.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">5) Buttons Explained</h3>
+              <h3 className="font-bold text-neutral-900">{ht.buttonsTitle}</h3>
               <ul className="text-neutral-700 mt-1 space-y-1">
-                <li><strong>Preview</strong> – Opens the print-ready view.</li>
-                <li><strong>Print / Save PDF</strong> – Prints only the preview sheet. Choose “Save as PDF” to create a file.</li>
-                <li><strong>Export</strong> – Downloads a JSON backup file.</li>
-                <li><strong>Import</strong> – Restores data from a JSON backup file.</li>
+                {ht.buttonsList.map((btn, i) => (
+                  <li key={i}><strong>{btn.b}</strong> – {btn.t}</li>
+                ))}
               </ul>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">6) Storage Keys (Advanced)</h3>
+              <h3 className="font-bold text-neutral-900">{ht.storageTitle}</h3>
               <ul className="text-neutral-700 mt-1 space-y-1 font-mono text-sm">
-                <li>App data key: toolstack.checkit.v1</li>
-                <li>Shared profile key: toolstack.profile.v1</li>
-                <li>Current App Key: {LS_KEY}</li>
+                {ht.storageKeys.map((k, i) => <li key={i}>{k}</li>)}
+                <li>{ht.storageCurrent}: {LS_KEY}</li>
               </ul>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">7) Notes / Limitations</h3>
+              <h3 className="font-bold text-neutral-900">{ht.notesTitle}</h3>
               <p className="text-neutral-700 mt-1">
-                Check-It is a productivity tool. Data accuracy depends on what you enter.<br />
-                Use Export regularly to avoid data loss.
+                {ht.notesText1}<br />
+                {ht.notesText2}
               </p>
             </section>
 
             <section>
-              <h3 className="font-bold text-neutral-900">8) Support / Feedback</h3>
-              <p className="text-neutral-700 mt-1">
-                If something breaks, include: device + browser + steps to reproduce + what you expected vs what happened.
-              </p>
+              <h3 className="font-bold text-neutral-900">{ht.supportTitle}</h3>
+              <p className="text-neutral-700 mt-1">{ht.supportText}</p>
             </section>
 
             <div className="pt-6 border-t border-neutral-100 text-center">
@@ -595,12 +685,42 @@ function HelpModal({ open, onClose, t }) {
   );
 }
 
-function ExportModal({ open, onClose, t, actions }) {
+const EXPORT_TEXT = {
+  en: {
+    title: "Export Pack",
+    subtitle: "Save, share, or back up your data.",
+    downloadPdf: "Download PDF",
+    printPdf: "Print / Save PDF",
+    emailDraft: "Create Email Draft",
+    downloadJson: "Download JSON",
+    importJson: "Import JSON",
+    importWarning: "Import replaces current app data. Export first if unsure.",
+    jsonData: "JSON Data",
+    emailSubject: "Check-It Export Pack",
+    emailBody: "Attach: PDF export from Check-It (please attach the downloaded PDF file).\n\nExports are generated on your device. No data is uploaded automatically."
+  },
+  de: {
+    title: "Export-Paket",
+    subtitle: "Speichere, teile oder sichere deine Daten.",
+    downloadPdf: "PDF herunterladen",
+    printPdf: "Drucken / PDF speichern",
+    emailDraft: "E-Mail-Entwurf erstellen",
+    downloadJson: "JSON herunterladen",
+    importJson: "JSON importieren",
+    importWarning: "Der Import ersetzt die aktuellen App-Daten. Im Zweifel zuerst exportieren.",
+    jsonData: "JSON-Daten",
+    emailSubject: "Check-It Export-Paket",
+    emailBody: "Anhängen: PDF-Export von Check-It (bitte die heruntergeladene PDF-Datei anhängen).\n\nExporte werden auf deinem Gerät erstellt. Es werden keine Daten automatisch hochgeladen."
+  }
+};
+
+function ExportModal({ open, onClose, t, actions, lang = "en" }) {
   if (!open) return null;
+  const et = EXPORT_TEXT[lang] || EXPORT_TEXT.en;
 
   const handleEmailDraft = () => {
-    const subject = `Check-It Export Pack – ${new Date().toISOString().slice(0, 10)}`;
-    const body = "Attach: PDF export from Check-It (please attach the downloaded PDF file).\n\nExports are generated on your device. No data is uploaded automatically.";
+    const subject = `${et.emailSubject} – ${new Date().toISOString().slice(0, 10)}`;
+    const body = et.emailBody;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
@@ -613,7 +733,7 @@ function ExportModal({ open, onClose, t, actions }) {
           {/* Header */}
           <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
             <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter text-neutral-900">
-              Export Pack
+              {et.title}
             </h2>
             <button
               type="button"
@@ -627,18 +747,18 @@ function ExportModal({ open, onClose, t, actions }) {
           {/* Content */}
           <div className="p-8 space-y-4">
             <p className="text-neutral-600 text-sm font-medium mb-2">
-              Save, share, or back up your data.
+              {et.subtitle}
             </p>
 
             <div className="space-y-2">
               <ActionButton onClick={() => { actions.preview(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
-                Download PDF
+                {et.downloadPdf}
               </ActionButton>
               <ActionButton onClick={() => { actions.preview(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
-                Print / Save PDF
+                {et.printPdf}
               </ActionButton>
               <ActionButton onClick={() => { handleEmailDraft(); onClose(); }} disabled={actions.disabled} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
-                Create Email Draft
+                {et.emailDraft}
               </ActionButton>
             </div>
             
@@ -646,20 +766,20 @@ function ExportModal({ open, onClose, t, actions }) {
             
             <div className="space-y-2">
               <ActionButton onClick={() => { actions.export(); onClose(); }} className="!bg-neutral-50 !border-neutral-200 !text-neutral-900 hover:!bg-neutral-100 w-full">
-                Download JSON
+                {et.downloadJson}
               </ActionButton>
               
               <ActionFileButton onFile={(f) => { actions.import(f); onClose(); }} tone="primary" className="!bg-[#D5FF00] !border-[#D5FF00] !text-neutral-900 hover:!bg-white hover:!border-neutral-900 w-full">
-                Import JSON
+                {et.importJson}
               </ActionFileButton>
               <p className="text-xs text-neutral-500 text-center mt-1">
-                Import replaces current app data. Export first if unsure.
+                {et.importWarning}
               </p>
             </div>
 
             <div className="pt-4 border-t border-neutral-100 text-center mt-4">
               <div className="inline-block px-4 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-bold text-neutral-500 tracking-widest uppercase">
-                JSON Data
+                {et.jsonData}
               </div>
             </div>
           </div>
@@ -1015,7 +1135,7 @@ export default function App() {
     setSections((prev) =>
       prev.map((s) =>
         s.id === sectionId
-          ? { ...s, items: [...(s.items || []), { id: uid(), text: lang === "de" ? "Neuer Eintrag" : "New item", done: false, dueDate: "" }] }
+          ? { ...s, items: [...(s.items || []), { id: uid(), text: "", done: false, dueDate: "" }] }
           : s
       )
     );
@@ -1121,12 +1241,13 @@ export default function App() {
         `}</style>
       ) : null}
 
-      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} t={t} />
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} t={t} lang={lang} />
 
       <ExportModal
         open={exportOpen}
         onClose={() => setExportOpen(false)}
         t={t}
+        lang={lang}
         actions={{
           email: emailCurrentView,
           export: exportJSON,
@@ -1243,13 +1364,55 @@ export default function App() {
       ) : null}
 
       <div className="max-w-6xl mx-auto p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-6 mb-8">
+          <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
+
+          <div className="relative flex justify-end gap-2 w-full sm:w-auto sm:mt-4">
+            <div className="flex items-center gap-2">
+              <ActionButton onClick={() => {}}>HUB</ActionButton>
+              <ActionButton onClick={() => setPreviewOpen(true)}>{t.preview}</ActionButton>
+              <ActionButton onClick={() => setExportOpen(true)}>{t.export}</ActionButton>
+            </div>
+
+            <button
+              type="button"
+              title={t.help}
+              onClick={() => setHelpOpen(true)}
+              className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 shadow-sm flex items-center justify-center font-bold text-neutral-800 text-sm"
+            >
+              ?
+            </button>
+
+            <div className="print:hidden absolute right-0 top-12 flex gap-3">
+              <button
+                onClick={() => setLang("en")}
+                className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
+                  lang === "en"
+                    ? "bg-[#D5FF00] text-black -rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
+                    : "bg-white text-neutral-400 rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
+                }`}
+                style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLang("de")}
+                className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
+                  lang === "de"
+                    ? "bg-[#D5FF00] text-black rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
+                    : "bg-white text-neutral-400 -rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
+                }`}
+                style={{ borderRadius: "15px 225px 15px 255px / 255px 15px 225px 15px" }}
+              >
+                DE
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Left Column: Logo, Status, Controls */}
           <div className="flex flex-col gap-6">
-            <div className="relative flex flex-col gap-3 w-full">
-              <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
-            </div>
-
             <div className="w-full max-w-lg bg-white rounded-2xl border-2 border-[#D5FF00] shadow-sm p-5">
                 <div className="flex items-end justify-between mb-4">
                   <div>
@@ -1419,51 +1582,6 @@ export default function App() {
 
           {/* Right Column: Actions, Sections */}
           <div className="lg:col-span-2 flex flex-col gap-6">
-            {/* Actions */}
-            <div className="flex flex-col items-end lg:h-28 lg:justify-center ">
-              <div className="relative flex justify-end gap-2 w-full">
-                <div className="flex items-center gap-2">
-                  <ActionButton onClick={() => {}}>HUB</ActionButton>
-                  <ActionButton onClick={() => setPreviewOpen(true)}>{t.preview}</ActionButton>
-                  <ActionButton onClick={() => setExportOpen(true)}>{t.export}</ActionButton>
-                </div>
-
-                <button
-                  type="button"
-                  title={t.help}
-                  onClick={() => setHelpOpen(true)}
-                    className="print:hidden h-9 w-9 rounded-xl border border-neutral-200 bg-white hover:bg-[#D5FF00]/30 hover:border-[#D5FF00]/30 hover:text-neutral-800 shadow-sm flex items-center justify-center font-bold text-neutral-800 text-sm"
-                >
-                  ?
-                </button>
-
-                <div className="print:hidden absolute right-0 top-14 flex gap-3">
-                    <button
-                      onClick={() => setLang("en")}
-                      className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
-                        lang === "en"
-                            ? "bg-[#D5FF00] text-black -rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
-                            : "bg-white text-neutral-400 rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
-                      }`}
-                      style={{ borderRadius: "255px 15px 225px 15px / 15px 225px 15px 255px" }}
-                    >
-                      EN
-                    </button>
-                    <button
-                      onClick={() => setLang("de")}
-                      className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
-                        lang === "de"
-                            ? "bg-[#D5FF00] text-black rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
-                            : "bg-white text-neutral-400 -rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
-                      }`}
-                      style={{ borderRadius: "15px 225px 15px 255px / 255px 15px 225px 15px" }}
-                    >
-                      DE
-                    </button>
-                </div>
-              </div>
-            </div>
-
             {/* Sections */}
             <div className="space-y-3">
               {filteredSections.map((s) => {
