@@ -59,8 +59,8 @@ const btnDanger =
   "print:hidden px-3 py-2 rounded-2xl text-sm font-medium border transition active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed bg-red-50 hover:bg-red-100 text-red-700 border-red-200 shadow-sm";
 const inputBase =
   "mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400/25 focus:border-neutral-300";
-const card = "rounded-2xl bg-white border-2 border-[#D5FF00] shadow-sm";
-const cardHead = "px-4 py-3 border-b border-green-100";
+const card = "rounded-2xl bg-white border border-neutral-200 shadow-lg";
+const cardHead = "px-4 py-3 border-b border-neutral-200";
 const cardPad = "p-4";
 
 function SmallButton({ children, onClick, tone = "default", disabled, title, className = "" }) {
@@ -375,7 +375,7 @@ function DateField({ value, onChange, disabled, lang = "en" }) {
           role="dialog" 
           aria-label={lang === "de" ? "Fälligkeitsdatum wählen" : "Choose due date"}
           style={{ top: pos.top, left: pos.left, width: pos.width }}
-          className="print:hidden fixed z-50 rounded-2xl border-2 border-neutral-900 bg-white shadow-[4px_4px_0px_#D5FF00] overflow-hidden max-h-[80vh]"
+          className="print:hidden fixed z-50 rounded-2xl border border-neutral-200 bg-white shadow-2xl overflow-hidden max-h-[80vh]"
         >
           <div className="px-3 py-2 border-b border-neutral-100 flex items-center justify-between gap-2">
             <div className="flex items-center gap-1">
@@ -590,7 +590,7 @@ function HelpModal({ open, onClose, t, lang = "en" }) {
       <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
       
       <div className="relative w-full max-w-lg transform transition-all">
-        <div className="relative bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
+        <div className="relative bg-white border border-neutral-200 rounded-[2rem] shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black italic tracking-tighter text-neutral-900">
@@ -729,7 +729,7 @@ function ExportModal({ open, onClose, t, actions, lang = "en" }) {
       <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={onClose} />
       
       <div className="relative w-full max-w-sm transform transition-all">
-        <div className="relative bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
+        <div className="relative bg-white border border-neutral-200 rounded-[2rem] shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="relative p-6 pb-4 flex items-center justify-between border-b-2 border-neutral-100">
             <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter text-neutral-900">
@@ -794,7 +794,7 @@ function ConfirmModal({ open, title, message, confirmText = "Delete", onConfirm,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
       <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative w-full max-w-md rounded-[2rem] bg-white border-2 border-neutral-900 shadow-[8px_8px_0px_#D5FF00] overflow-hidden">
+      <div className="relative w-full max-w-md rounded-[2rem] bg-white border border-neutral-200 shadow-2xl overflow-hidden">
         <div className="p-6 border-b-2 border-neutral-100">
           <h3 className="text-xl font-black text-neutral-900">{title}</h3>
           <p className="text-neutral-600 mt-2 font-medium">{message}</p>
@@ -1237,12 +1237,15 @@ export default function App() {
             .main-app-content { display: none !important; }
             body * { visibility: hidden; }
             
-            /* Reset constraints on ancestors to prevent clipping or trapping the print view */
-            html, body, #root, .fixed, .absolute, .relative, .transform, .overflow-hidden, .overflow-y-auto {
-              position: static !important;
-              transform: none !important;
-              overflow: visible !important;
+            /* Unwrap modal containers so they don't affect layout or create ghost pages */
+            .print-modal-reset {
+              display: contents !important;
+            }
+
+            html, body, #root {
               height: auto !important;
+              min-height: 0 !important;
+              overflow: visible !important;
             }
 
             #checkit-print, #checkit-print * { visibility: visible; }
@@ -1282,14 +1285,14 @@ export default function App() {
 
       {/* Preview Modal */}
       {previewOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
+        <div className="print-modal-reset fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
           <div className="absolute inset-0 bg-neutral-900/50 backdrop-blur-sm transition-opacity" onClick={() => setPreviewOpen(false)} />
           
-          <div className="relative w-full max-w-5xl h-[85vh] flex flex-col transform transition-all">
-            <div className="relative flex flex-col h-full bg-white border-2 border-neutral-900 rounded-[2rem] shadow-[12px_12px_0px_#D5FF00] overflow-hidden">
+          <div className="print-modal-reset relative w-full max-w-5xl h-[85vh] flex flex-col transform transition-all">
+            <div className="print-modal-reset relative flex flex-col h-full bg-white border border-neutral-200 rounded-[2rem] shadow-2xl overflow-hidden">
               
               {/* Header */}
-              <div className="relative p-6 pb-4 flex items-center justify-between shrink-0 border-b-2 border-neutral-100 bg-white z-10">
+              <div className="print:hidden relative p-6 pb-4 flex items-center justify-between shrink-0 border-b-2 border-neutral-100 bg-white z-10">
                 <div>
                   <h2 className="text-2xl sm:text-4xl font-black italic tracking-tighter text-neutral-900">
                     {t.printPreview}
@@ -1314,12 +1317,12 @@ export default function App() {
               </div>
 
               {/* Content Area - Scrollable */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-50">
-                <div className="mx-auto max-w-3xl bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+              <div className="print-modal-reset flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-50">
+                <div className="print-modal-reset mx-auto max-w-3xl bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
                   <div id="checkit-print" className="p-8 sm:p-12">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto mb-4 mix-blend-multiply" />
+                    <img src={checkitLogo} alt="CheckIt" className="h-24 w-auto mb-4 mix-blend-multiply" />
                     <div className="text-sm text-neutral-700">
                       {totals.done}/{totals.total} {t.done}
                       {totals.overdue ? ` • ${totals.overdue} ${t.overdueLabel}` : ""}
@@ -1426,7 +1429,7 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Left Column: Logo, Status, Controls */}
           <div className="flex flex-col gap-6">
-            <div className="w-full max-w-lg bg-white rounded-2xl border-2 border-[#D5FF00] shadow-sm p-5">
+            <div className="w-full max-w-lg bg-white rounded-2xl border border-neutral-200 shadow-lg p-5">
                 <div className="flex items-end justify-between mb-4">
                   <div>
                     <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-1">
