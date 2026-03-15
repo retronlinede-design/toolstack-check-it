@@ -1234,9 +1234,23 @@ export default function App() {
       {previewOpen ? (
         <style>{`
           @media print {
-            body * { visibility: hidden !important; }
-            #checkit-print, #checkit-print * { visibility: visible !important; }
-            #checkit-print { position: absolute !important; left: 0; top: 0; width: 100%; }
+            .main-app-content { display: none !important; }
+            body * { visibility: hidden; }
+            
+            /* Reset constraints on ancestors to prevent clipping or trapping the print view */
+            html, body, #root, .fixed, .absolute, .relative, .transform, .overflow-hidden, .overflow-y-auto {
+              position: static !important;
+              transform: none !important;
+              overflow: visible !important;
+              height: auto !important;
+            }
+
+            #checkit-print, #checkit-print * { visibility: visible; }
+            #checkit-print { 
+              position: absolute !important; 
+              left: 0 !important; top: 0 !important; 
+              width: 100% !important; margin: 0 !important; padding: 0 !important; 
+            }
           }
         `}</style>
       ) : null}
@@ -1302,16 +1316,15 @@ export default function App() {
               {/* Content Area - Scrollable */}
               <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-neutral-50">
                 <div className="mx-auto max-w-3xl bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-                  <div id="checkit-print" className="p-8 sm:p-12 min-h-[50vh]">
+                  <div id="checkit-print" className="p-8 sm:p-12">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <div className="text-2xl font-bold tracking-tight text-neutral-800">{title || "Check-It"}</div>
+                    <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto mb-4 mix-blend-multiply" />
                     <div className="text-sm text-neutral-700">
                       {totals.done}/{totals.total} {t.done}
                       {totals.overdue ? ` • ${totals.overdue} ${t.overdueLabel}` : ""}
                       {isFiltered ? ` • ${t.filteredShowing} ${filteredTotals.total} ${t.filteredItems}` : ""}
                     </div>
-                    <div className="mt-3 h-[2px] w-72 rounded-full bg-gradient-to-r from-lime-400/0 via-lime-400 to-emerald-400/0" />
                   </div>
                   <div className="text-sm text-neutral-700">
                     {t.generated}: {new Date().toLocaleString()}
@@ -1363,9 +1376,9 @@ export default function App() {
         </div>
       ) : null}
 
-      <div className="max-w-6xl mx-auto p-4 sm:p-6">
+      <div className="main-app-content max-w-6xl mx-auto p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start justify-between gap-6 mb-8">
-          <img src={checkitLogo} alt="CheckIt" className="h-16 w-auto sm:h-28 select-none mix-blend-multiply" draggable="false" />
+          <img src={checkitLogo} alt="CheckIt" className="h-20 w-auto sm:h-36 select-none mix-blend-multiply" draggable="false" />
 
           <div className="relative flex justify-end gap-2 w-full sm:w-auto sm:mt-4">
             <div className="flex items-center gap-2">
@@ -1383,10 +1396,10 @@ export default function App() {
               ?
             </button>
 
-            <div className="print:hidden absolute right-0 top-12 flex gap-3">
+            <div className="print:hidden absolute right-0 top-14 flex gap-3">
               <button
                 onClick={() => setLang("en")}
-                className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
+                className={`h-8 w-9 text-xs font-black border-2 border-black transition-all ${
                   lang === "en"
                     ? "bg-[#D5FF00] text-black -rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
                     : "bg-white text-neutral-400 rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
@@ -1397,7 +1410,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => setLang("de")}
-                className={`h-9 w-10 text-xs font-black border-2 border-black transition-all ${
+                className={`h-8 w-9 text-xs font-black border-2 border-black transition-all ${
                   lang === "de"
                     ? "bg-[#D5FF00] text-black rotate-12 scale-110 shadow-[4px_4px_0px_#000] z-10"
                     : "bg-white text-neutral-400 -rotate-6 hover:rotate-0 hover:bg-neutral-50 hover:text-black hover:shadow-[2px_2px_0px_#000]"
@@ -1605,7 +1618,7 @@ export default function App() {
                             {collapsed ? "▸" : "▾"}
                           </button>
                           <input
-                            className="flex-1 w-full font-semibold text-neutral-800 bg-transparent outline-none"
+                            className="flex-1 w-full font-bold text-neutral-800 bg-transparent border-2 border-transparent hover:border-neutral-200 hover:bg-white focus:bg-white focus:border-[#D5FF00] rounded-xl px-2 py-1 transition-all outline-none"
                             value={s.name}
                             onChange={(e) => renameSection(s.id, e.target.value)}
                           />
